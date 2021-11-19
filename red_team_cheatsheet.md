@@ -52,152 +52,219 @@
     - [Maltego](https://www.maltego.com/): graphical link analysis tool for gathering and connecting information
     - [Obisdian](https://obsidian.md/): markdown editor
     
-## 2. Enumeration / Scanning
+## 2. Scanning / Active Reconnaissance
 *Enumeration* is necessary to map out the overall *attack surface* of the target(s).
 
 ### Tools
+- [ping](https://www.computerhope.com/unix/uping.htm): ICMP network probe
+- [telnet](https://www.computerhope.com/jargon/t/telnet.htm): utility for interactive sessions over the TELNET
+- [traceroute](https://www.computerhope.com/unix/utracero.htm): find network route taken by packets
+- [netcat (nc)](https://www.linuxfordevices.com/tutorials/netcat-command-in-linux): network Swiss army knife
+- [arp-scan](http://www.royhills.co.uk/wiki/index.php/Arp-scan_User_Guide): network scanner using ARP
+- [masscan](https://danielmiessler.com/study/masscan/): fast IP port scanner 
 - [nmap](https://nmap.org/)
     ```bash
-    # Scan Types 
+    # Note <host> can be replaced with any IP in standard CIDR notation
+    # e.g. 192.168.1.0/24
+
+    # Host discovery
+    nmap -sL <host> # list all IPs in the provided range, this also performs a reverse 
+                    # DNS lookup
+    nmap -PN <host> # skip initial ping check to scan hosts that ignore ping
+    nmap -PS <host> # TCP SYN ping
+    nmap -PA <host> # TCP ACK ping
+    nmap -PU <host> # UDP ping
+    nmap -PE <host> # ICMP ping echo (code 8)
+    nmap -PP <host> # ICMP ping timestamp (code 14)
+    nmap -PM <host> # ICMP ping address mask (code 18)
+
+    # Port scanning
     nmap -sn <host> # Ping scan (disables port scan)
-    nmap -Ap <host> # Agressive, enables OS and version detection,
-                                    # script scanning, and traceroute across all ports
     nmap -sT <host> # TCP scan
     nmap -sU <host> # UDP scan
-    nmap -sN <host> # NULL scan
-    nmap -sF <host> # FIN scan
-    nmap -sX <host> # Xmas scan
-    nmap -sS <host> # SYN scan
+    nmap -sN <host> # TCP NULL scan: all flags are set to 0
+    nmap -sF <host> # TCP FIN scan: FIN flag set to 1
+    nmap -sX <host> # TCP Xmas scan: FIN, PSH, and URG flags set to 1
+    nmap -sM <host> # TCP Maimon scan: FIN, and ACK flags set to 1, not very useful
+                    # against modern networks
+    nmap -sA <host> # TCP ACK scan: ACK flag set to 1, helpful if there is a firewall
+                    # in front of the target
+    nmap -sW <host> # Window scan: like ACK scan, but also examines the TCP Window field
+                    # of the RST packets returned which reveals if the port is open
+    nmap -sS <host> # TCP SYN scan: SYN flag set to 1
+    nmap --scanflags <custom-flags> <host> # Custom scan: create custom flag scan
+
+    # Spoofing / Decoys
+    nmap -S <spoofed-ip> <host> # scan with an apparent source of <spoofed-ip>
+    nmap -D <decoys>,ME <host>  # launch decoy scans from  the provided list of decoy IPs
+    nmap -sI <zombie-ip> <host> # Idle/Zombie scan, makes each probe appear to originate
+                                # from the idle/zombie host
+
+    # Other options
     nmap --script=vuln <host> # enumerate host for known vulnerabilities
-    nmap -PN <host> # skip initial ping check to scan hosts that ignore ping
-    nmap -v -sV -sC -oN nmap <host> # standard scan top 10000
-    nmap -v -sV -sC -oN nmapAll <host> -p- # standard scan all ports
+    nmap -Ap <host>     # Agressive, enables OS and version detection,
+                        # script scanning, and traceroute across all ports
+    nmap -F <host>      # Fast scan (only top 100 instead of 1000)
+    nmap -f <host>      # fragment packets into 8 bytes or less
+    nmap -ff            # fragment packets into 16 bytes or less
+    nmap --mtu          # change default (8) fragment size value
+    nmap --data-length  # pad packets to given length (can appear more innocuous than
+                        # empty packets)
+    nmap --reason       # display the reason a port is in a particular state
+    nmap -v             # verbose output
+    nmap -vv            # more verbosity
+    nmap -d             # debugging details
+    nmap -dd            # more debugging details
+
+    # Output options
+    nmap -oN <file>     # output normal format
+    nmap -oG <file>     # output greppable format
+    nmap -oX <file>     # output XML format
+
+    # Post port scan
+    nmap -sV            # probe ports to detect running services and versions
+    nmap -O             # OS detection (not always accurate)
+    nmap --traceroute   # add traceroute to results
+
+    # NSE (Nmap Scripting Engine)
+    # Downloaded scripts can be found at `/usr/share/nmap/scripts` 
+    nmap --script=default   # enable scripts in the `default` category
+    nmap --script=name      # enable given script
+    nmap -sC                # shorthand to enable scripts in the `default` category
+    
+    
+    # Typical scans
+    nmap -v -sV -sC -oN nmap <host> # scan top 1000 ports including version checks
+                                    # and standard scripts and output to nmap file
+    nmap -v -sV -sC -oN nmapAll <host> -p-  # same as above, but scan all ports and
+                                            # output to nmapAll file
     ```
     - [NSE (Nmap Scripting Engine)](https://nmap.org/book/man-nse.html)
-	- Don't forget to lookup `nmap` script, there are many available for finding vulns and enumerating a host for many services	
-- [dirb](https://tools.kali.org/web-applications/dirb): enum web directories/files
-- [dirbuster](https://tools.kali.org/web-applications/dirbuster): enum web directories/files
+	- Don't forget to lookup `nmap` script, there are many available for finding vulns and enumerating a host for many service
 - [dnsrecon](https://pentestlab.blog/2012/11/13/dns-reconnaissance-dnsrecon/)
-- [gobuster](https://github.com/OJ/gobuster): enum web directories/files
 - [enum4linux-ng](https://github.com/cddmp/enum4linux-ng)
 - [metasploit](https://www.metasploit.com/): DB of easily searchable and configurable exploits
-- [Burpe Suite](https://www.metasploit.com/): capture and mod HTTP requests
-- [ZAP](https://www.zaproxy.org/getting-started/): capture HTTP requests, web fuzzing
-- [grep.app](https://grep.app/): search Github for api keys, passwords etc.
-- [smbmap](https://tools.kali.org/information-gathering/smbmap): enumerate smb shares
-- [smbclient](https://linux.die.net/man/1/smbclient)
-- [smbtree](https://linux.die.net/man/1/smbtree)
-- [wfuzz](https://wfuzz.readthedocs.io/en/latest/): web app bruteforcer
-- [ffuf (Fuzz Faster U Fool)](https://github.com/ffuf/ffuf): a fast web fuzzer written in Go
-- [AutoRecon](https://github.com/Tib3rius/AutoRecon): network recon tool which performs automated enumeration of services 
+- SMB Enum
+    - [smbmap](https://tools.kali.org/information-gathering/smbmap): enumerate smb shares
+    - [smbtree](https://linux.die.net/man/1/smbtree)
+    - [smbclient](https://linux.die.net/man/1/smbclient)
+        ```bash
+        smbclient -L <host> # list shares/devices available over smb
+        ```
+    - nmap scripts
+        ```bash
+        # Catchall nmap SMB enum scan
+        nmap -d --script smb-enum-domains.nse,smb-enum-groups.nse,smb-enum-processes.nse,smb-enum-services.nse,smb-enum-sessions.nse,smb-enum-shares.nse,smb-enum-users.nse -o nmapSMB -p445 <host>
 
-### Tips/Tricks
+        ```
+- Fuzzing / Web Domain Enumeration
+    - [dirb](https://tools.kali.org/web-applications/dirb): enum web directories/files
+    - [dirbuster](https://tools.kali.org/web-applications/dirbuster): enum web directories/files
+    - [gobuster](https://github.com/OJ/gobuster): enum web directories/files
+    - [wfuzz](https://wfuzz.readthedocs.io/en/latest/): web app bruteforcer
+    - [ffuf (Fuzz Faster U Fool)](https://github.com/ffuf/ffuf): a fast web fuzzer written in Go
+- [AutoRecon](https://github.com/Tib3rius/AutoRecon): network recon tool which performs automated enumeration of services 
+- Web Proxies
+    - [Burpe Suite](https://www.metasploit.com/): capture and mod HTTP requests
+    - [ZAP](https://www.zaproxy.org/getting-started/): capture HTTP requests, web fuzzing
+
+### Subdomain Enumeration
+- OSINT
+    - SSL/TLS Certificates: [crt.sh](https://crt.sh): certificate database
+    - Search Engines: Google example: `-site:www.domain.com site:*.domain.com`
+- Brute force: e.g. gobuster, ffuf, sublist3r etc. to find subdomains or virtualhosts
+
+### Tips / Tricks
 - Websites / Webservers
-    - Enumerate web directories/files with a tool like gobuster
-    - when enumerating a website, if you find hidden directories not picked up on the first pass of gobuster/dirbuster, don't forget to rerun them with the new base directory
+    - Enumerate web directories/files with a tool like gobuster, ffuf, etc.
+    - when enumerating a website, if you find hidden directories not picked up by yoru fuzzer, don't forget to rerun them with the new base directory. E.g. gobuster and ffuf don't recurse automatically.
 
 ## 3. Exploitation / Gaining Access
 Never jump to the *exploitation* phase too early. You __must__ perform adequate *reconnaissance* and *enumeration*.
 
+### Exploit/CVE Research Tools
+- [Mitre CVE](https://cve.mitre.org/)
+- [CVE Details](https://www.cvedetails.com/)
+- [NVD](https://nvd.nist.gov/vuln/search)
+- [Exploit-DB](https://www.exploit-db.com/)
+- [Rapid7](https://www.rapid7.com/db/)
+- [searchsploit](https://www.exploit-db.com/searchsploit): searches [exploit.db](https://exploit.db)
+
 ### Tools
+- [Metasploit Notes](metasploit.md) / [Metasploit](https://docs.rapid7.com/metasploit/)
 - Reverse / Bind Shells Payloads
-    - [netcat](https://nmap.org/ncat/guide/index.html): network Swiss Army knife
+    - [netcat/nc](https://www.unix.com/man-page/Linux/1/netcat): network Swiss Army knife
+    - [ncat](https://nmap.org/ncat/guide/index.html): replacement for netcat from 
     - [Socat](https://linux.die.net/man/1/socat): bidirectional byte stream handler, useful for more stable reverse & bind shells
     - [Reverse Shell Generator](https://www.revshells.com/)
     - [pentestmonkey](http://pentestmonkey.net/)
     - [msfvenom](https://github.com/rapid7/metasploit-framework/wiki/How-to-use-msfvenom)
     - [ASMI.fail](https://amsi.fail/): obfuscated powershell snippets. ASMI = Anti-Malware Scan Interface
     - [ScareCrow](https://github.com/optiv/ScareCrow): payload creation framework designed for EDR bypass
-    - [searchsploit](https://www.exploit-db.com/searchsploit): searches [exploit.db](https://exploit.db)
-    - [Metasploit](https://docs.rapid7.com/metasploit/)
-        ----
-        ```msfconsole
-        # Search metasploit's db for exploits
-        search <keyword>
-        
-        # Get context-specific variable
-        get <var>
-        
-        # Set global variable
-        setg <var>
-        
-        # Unset context-specific variable
-        unset <var>
-        
-        # store nmap scan in database
-        db_nmap <options> <host>
-        
-        # list open services on target
-        services
-        
-        # list host info in database
-        hosts
-        
-        # list vulns
-        vulns
 
-        # edit exploit source code
-        edit
-        ```
-        ```meterpreter (windows)
-        # migrate to another process
-        migrate <PID>
-        
-        # check if target is a VM
-        run post/windows/gather/checkvm
-        
-        # setup msfvenom reverse shell payload listener
-        # don't forget to set LHOST and LPORT	
-        use exploit/multi/handler
-        
-        # setup windows meterpreter reverse shell
-        set payload windows/meterpreter/reverse_tcp
-        run
-        ```
-- Automated Scanners
-    - [sqlmap](https://sqlmap.org/)
-    - [Nishang](https://github.com/samratashok/nishang)
-    - [nikto](https://securitytrails.com/blog/nikto-website-vulnerability-scanner): web server vuln scanner
-        - may need to look at `-Help` not all info in man pages
-        - use `-until` to set scan duration
-            ```bash
-            # default scan
-            nikto -h <url> -p <port> -output <file.txt>
-            ```
 - Phishing
     - [Gophish](https://getgophish.com/): 
-- [impacket](https://github.com/SecureAuthCorp/impacket)
-    
+- [impacket](https://github.com/SecureAuthCorp/impacket): set of python classes for interacting with network protocols
+- [scapy](https://github.com/secdev/scapy): interacdtive packet crafter
+- [bettercap](https://www.bettercap.org/): Swiss Army knife for WifFi, Bluetooth, etc. network recon and MITM attacks
 
-### Exploit/CVE Research
-- [Mitre CVE](https://cve.mitre.org/)
-- [CVE Details](https://www.cvedetails.com/)
-- [NVD](https://nvd.nist.gov/vuln/search)
-- [Exploit Database](https://www.exploit-db.com/)
+    
+### [Web Exploitation](web.md)
+
 ----
 
-### [Web Exploitation](web.md)
 
 ### Network Services
 #### Telnet
 #### SMB (Server Message Blocks)
 - `enum4linux-ng`, `smclient`
-#### FTP
+#### FTP / SFTP
 - `ftp`
-    - If you ever download file via FTP, may need to use the `binary` command, which sets the transfer type and supports binary images.
+    - If you ever download file via FTP, may need to use the `binary` command, which sets the transfer type and supports binary images (default is `ascii`).
 #### [Kerberos](https://docstore.mik.ua/orelly/networking_2ndEd/fire/ch21_05.htm)
+Kerberos is the default authentication services for Windows domains. [Kerberos Auth 101](https://redmondmag.com/articles/2012/02/01/understanding-the-essentials-of-the-kerberos-protocol.aspx)
+- Terms
+    - Ticket Granting Ticket (TGT) - A ticket-granting ticket is an authentication ticket used to request service tickets from the TGS for specific resources from the domain.
+    - Key Distribution Center (KDC) - The Key Distribution Center is a service for issuing TGTs and service tickets that consist of the Authentication Service and the Ticket Granting Service.
+    - Authentication Service (AS) - The Authentication Service issues TGTs to be used by the TGS in the domain to request access to other machines and service tickets.
+    - Ticket Granting Service (TGS) - The Ticket Granting Service takes the TGT and returns a ticket to a machine on the domain.
+    - Service Principal Name (SPN) - A Service Principal Name is an identifier given to a service instance to associate a service instance with a domain service account. Windows requires that services have a domain service account which is why a service needs an SPN set.
+    - KDC Long Term Secret Key (KDC LT Key) - The KDC key is based on the KRBTGT service account. It is used to encrypt the TGT and sign the PAC.
+    - Client Long Term Secret Key (Client LT Key) - The client key is based on the computer or service account. It is used to check the encrypted timestamp and encrypt the session key.
+    - Service Long Term Secret Key (Service LT Key) - The service key is based on the service account. It is used to encrypt the service portion of the service ticket and sign the PAC.
+    - Session Key - Issued by the KDC when a TGT is issued. The user will provide the session key to the KDC along with the TGT when requesting a service ticket.
+    - Privilege Attribute Certificate (PAC) - The PAC holds all of the user's relevant information, it is sent along with the TGT to the KDC to be signed by the Target LT Key and the KDC LT Key in order to validate the user.
+- Attack Methods	
+    - Kerbrute Enumeration - No domain access required 
+    - Pass the Ticket - Access as a user to the domain required
+    - Kerberoasting - Access as any user required
+        ```powershell
+        setspn-T medin -Q */*  # extract all accounts in the SPN (Service Principal Name)
+         ```
+    - AS-REP Roasting - Access as any user required. Kerberos attack method for when a user account has the "Does not require Pre-Authentication" privilege set, so the account doesn't need to provide valid identification before requesting a Kerberos ticket
+        - Use Impacket `GetNPUsers.py` to query ASREPRoastable accounts from the Key Distribution Center. You just need a valid set of usernames.
+    - Golden Ticket - Full domain compromise (domain admin) required 
+    - Silver Ticket - Service hash required 
+    - Skeleton Key - Full domain compromise (domain admin) required
+- Tools
+    - [Kerbrute](https://github.com/ropnop/kerbrute): tool for Kerberos pre-auth bruteforcing
+    - [Rubeos](https://github.com/GhostPack/Rubeus): a C# toolset for raw Kerberos interaction and abuses
+    - [Impacket](https://github.com/SecureAuthCorp/impacket): Impacket GetNPUsers.py
+- ASREPRoasting: 
+- Pass the Ticket w/mimikatz: dump the TGT from LSASS memory
+- Golder/Silver Ticcket Attacks w/mimikatz
 #### NFS
-- `showmount` - shows mount info for an NFS server
+- `showmount e <host>` - shows mount info for an NFS server
 - mount the NFS share with `sudo mount -t nfs <IP>:<SHARE> /mount/location`
 #### SMTP
 - enumerate with nmap script or metasploit (auxiliary/scanner/smtp/smtp-enum)
 #### MySQL
 - enumerate with nmap script or metasploit (auxiliary/scanner/mysql)
-
-### Tips/Tricks
-- Use `python -c 'import pty;pty.spawn("/bin/bash")'` to run a bash shell
+#### Git
+- [GitTools](https://github.com/internetwache/GitTools): scripts for pwning .git repos
 
 #### Shells
+- Stabilize shell with python: `python -c 'import pty;pty.spawn("/bin/bash")'` to run a bash shell
 - Get stable bind or reverse shell
     1. Python 
         ```bash
