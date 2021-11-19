@@ -547,7 +547,13 @@ Provide a *full format report* along with a breakdown including *remediation rec
 # Linux
 
 # Windows
-## [NTLM Relay](https://en.hackndo.com/ntlm-relay/)
+- How to `scp` files to/from a Windows machine
+    ```bash
+    ```
+
+## Powershell
+- [Nishang](https://github.com/samratashok/nishang): powershell offensive scripts and payloads
+
 ## Active Directory (AD)
 *Active Directory* (AD) is the directory service for Windows Domain Networks. AD allows for control and monitoring of all a companies users through a single *domain controller*. It allows a single user to sign into any computer on the AD network.
 
@@ -589,7 +595,7 @@ Provide a *full format report* along with a breakdown including *remediation rec
 		- Cloneable Domain Controllers: members that are domain controllers can be cloned
 		- RAS and IAS Servers: servers in this group can access remote access properties of users
 	- Distribution Groups: these groups can specify email distribution lists.
-- Trusts: a mechanism for users in the network to gain acccess to other resources in the domain. Mostly truts outline the way domains inside a forest communicate with each other.
+- Trusts: a mechanism for users in the network to gain access to other resources in the domain. Mostly truts outline the way domains inside a forest communicate with each other.
 	- Directional Trusts: the direction of the trust flows from a *trusting* domain to a *trusted* domain
 	- Transitive: the trust relationship expands beyond just two domains to include to include other trusted domains	
 - Policies: dictate how the server operates and what rules it will or won't follow. These rules apply to the entire domain.
@@ -604,7 +610,7 @@ Provide a *full format report* along with a breakdown including *remediation rec
 		- Kerberos: default auth service for AD, uses ticket-granting tickets and service tickets to authenticate users
 - Azure (AD in the Cloud)
 
-	Windows Server AD|Azure AD
+	|Windows Server AD|Azure AD
 	|---|---
 	|LDAP|Rest APIs
 	|NTLM|OAuth/SAML
@@ -615,6 +621,7 @@ Provide a *full format report* along with a breakdown including *remediation rec
 
 
 ## Auth / LSASS.exe
+- [NTLM Relay](https://en.hackndo.com/ntlm-relay/)
 - [Access Tokens](https://docs.microsoft.com/en-us/windows/win32/secauthz/access-tokens)
 	- Primary Access Tokens: token associated with a user account generated at log on
 	- Impersonation Tokens: token that allows a particular process (or thread) to gain access to resources using the token of another user/client process. These tokens have levels.
@@ -626,7 +633,9 @@ Provide a *full format report* along with a breakdown including *remediation rec
 	- group SIDs
 	- privileges
 
+## Useful File Locations
+- `C:\windows\system32\drivers\etc\hosts`: equivalent of linux `/etc/hosts` file
 
-## Kali
+## Kali / Attack Box
 - Windows binaries in `/usr/share/windows-resources/binaries`
 
