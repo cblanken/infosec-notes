@@ -342,26 +342,171 @@ Kerberos is the default authentication services for Windows domains. [Kerberos A
 
 
 ## 4. Privilege Escalation (Priv Esc)
-### Tools
-- Vuln Enum
-	- [PEASS-ng](https://github.com/carlospolop/PEASS-ng): Privilege Escalation Awesome Scripts SUITE
-	- [LinEnum](https://githeub.com/rebootuser/LinEnum)
-	- [LSE (Linux Smart Enumeration)](https://github.com/diego-treitos/linux-smart-enumeration)
-	- [pspy](https://github.com/DominicBreuker/pspy/): monitor processes w/o root permissions
-	- [Seatbelt](https://github.com/GhostPack/Seatbelt): C# project that performs "safety checks" on a Windows host
-- Brute Forcing
-- Escalation
-	- [gtfobins](https://gtfobins.github.io/)
+### Windows
+#### Automated Tools
+- [WinPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/winPEAS)
+- [Seatbelt](https://github.com/GhostPack/Seatbelt): C# project that performs "safety checks" on a Windows host
+- [Windows Exploit Suggester - Next Generation](https://github.com/bitsadmin/wesng): python script that 
+- Metaspoit module `multi/recon/local_exploit_suggester`: list vulnerabilities for the target system
 
-### Passwords / Cracking Hashes
+#### Manual Enum
+- `C:\Windows\Temp`: world writeable temp directory
+- `C:\Program Files (x86)\SystemScheduler\Events`: windows scheduled services event logs
+- `C:\Windows\System32\drivers\etc\hosts`: /etc/hosts for Windows
+- Info
+    - `whoami /priv`: list all privileges
+    - `hostname`: show hostname
+    - `net users`: list users
+    - `net users <username>`: list details of username
+    - `net localgroup`: list user groups defined on the system
+    - `net localgroup <groupname>`: list member of a group
+    - `query session`: show other users logged in simultaneously
+    - `sc query`: lists running services
+    - `sc query <service`: get information on service
+    - `wevtutil`: retrieve info about event logs and publishers
+    - `systeminfo`: return overview of target system
+- Files / Search
+    - `findstr`: cmd grep
+    - `findstr /si password *.txt`: recursively search the current directory for .txt files with the name "password" ignoring case
+- Windows Updates
+    - `wmic qfe get Caption,Description,HotFixID,InstalledOn`: list updates installed on the system
+- Scheduled Tasks
+    - `schtasks /query /fo LIST /v`: list scheduled tasks
+    - Look for tasks with lost binaries or binaries you can edit
+- Drivers
+    - `driverquery`: list available drivers
+        - drivers are less frequently updated and may present a vulnerability
+- Software / Services
+    - `wmic product get name,version,vendor`: list installed software (may not return all installed programs)
+    - `wmic service list brief`: list running services
+    - `wmic service get name,displayname,pathname,startmode`: list running services
+    - `netstat -ano`: list al listening ports
+        - can try port forwarding any ports that are unreachable from the outside as another potential vector
+- AV
+    - `sc query windefend`: return state of Windows Defender service (windefend)
+    - `sc queryx type=service`: ???
+- Powershell
+    - `powershell.exe -nop -exec bypass`: launch powershell without execution policy restrictions
+- DLL Hijacking: manipulating a DLL used by an aplication
+    - Use `ProcMon` to find application with missing DLLs (with NAME NOT FOUND error). NOTE this type of research will need to be done on lab box sinceadmin is required to run `ProcMon`
+    - Example minimal DLL file:
+    ```c
+    #include <windows.h>
+
+    BOOL WINAPI DllMain (HANDLE hDll, DWORD dwReason, LPVOID lpReserved) {
+        if (dwReason == DLL_PROCESS_ATTACH) {
+            system("cmd.exe /k whoami > C:\\Temp\\dll.txt");
+            ExitProcess(0);
+        }
+        return TRUE;
+    }
+    ```
+    - Command to compile above dll with MinGW: `x86_64-w64-mingw32-gcc windows_dll.c -shared -o output.dll`
+    - `sc stop dllsvc & sc start dllsvc`: restart the dllsvc service
+- Unquoted Service Path: when a service binary path is not "quoted"
+    - this can be exploited if we can write to a folder on the path and are able to restart the service
+- Token Impersonation ("Potato" series of series of exploits often refer to this kind of vuln)
+- Files / Password
+    - cleartext password files
+    - config files
+    - registry keys
+        - `reg query HKLM / password /t REG_SZ /s`: search registries possibly containing passwords
+        - `reg query HKCU / password /t REG_SZ /s`: search registries possibly containing passwords
+    - `cmdkey /list`: list saved users' credentials
+    - `unattend.xml`: used for setup by sysadmins, shoudl normally be deleted after setup
+
+#### App Locker
+App Locker is an application allowlisting technology introduced with Windows 7
+- Bypass
+    - The default `AppLocker` configuration allowes applications to be executed from `C:\Windows\System32\spool\drivers\color`
+
+
+### Linux
+#### Automated Tools
+- [LinPEAS](https://github.com/carlospolop/PEASS-ng/tree/master/linPEAS)
+- [LinEnum](https://github.com/rebootuser/LinEnum)
+- [LSE (Linux Smart Enumeration)](https://github.com/diego-treitos/linux-smart-enumeration)
+- [Linux PrivChecker](https://github.com/sleventyeleven/linuxprivchecker)
+- [pspy](https://github.com/DominicBreuker/pspy/): monitor processes w/o root permissions
+
+#### Manual Enum
+1. General System Info / Environment
+    - `id`: print real and effect user and group IDs
+    - `hostname`: may reveal target system's role within the network
+    - `uname -a`: additional system info such as hostname, kernel version, distribution
+    - `/etc/issue`: contains OS info (can be easily changed though)
+    - `/proc/version`: kernel version
+    - The `proc` filesystem (`procfs`) is a commonly installed on Linux contains useful information on the system processes
+1. User Info
+    - `env`: list current environment variables
+        - pay particular attention to the `PATH` and `shell`
+    - History Files
+    - Config Files
+        - `~/.bashrc`: bash config
+        - `~/.ssh`: ssh keys
+    
+1. Processes (CHECK WHAT THE SYSTEM IS RUNNING)
+    - `ps -A` or `ps -e` to view all processes
+    - `ps -eo euser,ruser,suser,fuser,f,comm,label`: get security info
+    - `ps -U root -u root u`: see every process running as root
+        - Search for services such as `mysql`,`postgres`,`tmux` etc. running as root
+        - Consider searching by processes run by particular users or groups
+1. Sudo / SUID / SGID / Executables / Weak File Permissions
+    - [gtfobins](https://gtfobins.github.io/)
+    - `sudo -l`: list sudo permissions for current user
+    - `find / -type f -perm -u+s 2>/dev/null`: find all suid files
+    - `find / -type f -perm -g+s 2>/dev/null`: find all guid files
+    - `find / -type f -perm 0777 2>/dev/null`: find all files with 777 permissions
+    - `find / -writable -type d 2>/dev/null`: find world writable folders
+    - `find / -writable -type f 2>/dev/null`: find world writable files
+    - `find / -perm -o=w -type d 2>/dev/null`: find world writable folders
+    - `find / -perm -o=x -type f 2>/dev/null`: find executable files
+    - `find / -type f -user www-data 2>/dev/null`: find all files owned by user www-data
+    - readable /etc/shadow
+    - [shared object injection](https://rafalcieslak.wordpress.com/2013/04/02/dynamic-linker-tricks-using-ld_preload-to-cheat-inject-features-and-investigate-programs/) using `LD_PRELOAD`
+    - abusing shell features
+1. Recent files
+    - `find / -mtime 10 2>/dev/null`: find files modified in the last 10 days
+    - `find / -atime 10 2>/dev/null`: find files accessed in the last 10 days
+    - `find / -ctime 60 2>/dev/null`: find files changed in the last 10 days
+    - `getcap -r / 2>/dev/null`: list enabled capabilities
+1. Cron
+    - `/etc/crontab`: system cronjobs
+    - File Permissions
+    - PATH Environment Variable: you can plant a script if the you can write to a directory in the path, and the cronjob doesn't specify a full path or uses a wildcard `*`
+1. Storage
+    - Store enum scripts, exploits, etc.  in `/tmp/` or `/dev/shm/`
+    - Shell Escape Sequences
+1. NFS
+    - `showmount -e <host>`: show NFS server's export list
+    - `/etc/exports`: NFS config check for _root_squashing_
+1. Kernel Exploits
+1. Priv Esc Scripts
+1. [Restricted Shells](https://fireshellsecurity.team/restricted-linux-shell-escaping-techniques/)
+1. [Write your own shell code](https://axcheron.github.io/linux-shellcode-101-from-hell-to-shell/)
+
+### Docker / VMs
+- [deepce](https://github.com/stealthcopter/deepce)
+
+## 5. Post Exploitation
+### Passwords / Cracking Hashes / Bypassing Auth
 - [Hydra](https://en.kali.tools/?p=220)
+    ```bash
+    # General usage
+    hydra -L <userlist.txt> -P <passwordlist.txt> http-post-form "<LOGIN_PAGE>:<REQUEST_BODY>:<ERROR_MESSAGE>"
+    # Example wordpress password reset fuzzing
+    hydra -I -L /usr/share/seclists/Usernames/Names/names.txt -p "password" internal.thm http-post-form "/blog/wp-login.php?action=lostpassword:user_login=^USER^&redirect_to=&wp-submit=Get+New+Password:F=There is no account with that username or email address."
+    ```
 - [John the Ripper](https://openwall.info/wiki/john)
     ```bash
     # crack hashes and show results
     john --format=<format> --show hashes.txt 
+
+    ssh2john
     ```
-- [hashcat](https://hashcat.net/hashcat/)
-- [crackstation.com](https://crackstation.net/)
+- [secretsdump.py](https://medium.com/@benichmt1/secretsdump-demystified-bfd0f933dd9b)
+- [hashcat](https://hashcat.net/hashcat/): CPU and GPU enabled hashcracking tool
+- [crackstation.com](https://crackstation.net/): online hash identifier and hashcracking tool using popular rainbow tables
 - [hashes.com](https://hashes.com/en/decrypt/hash)
 - [unshadow](https://www.commandlinux.com/man-page/man8/unshadow.8.html)
 - [CrackMapExec](https://ptestmethod.readthedocs.io/en/latest/cme.html)
@@ -369,51 +514,12 @@ Kerberos is the default authentication services for Windows domains. [Kerberos A
 - [Hashes.com](https://hashes.com/en/tools/hash_identifier)
 - [hash-identifier](https://gitlab.com/kalilinux/packages/hash-identifier/-/tree/kali/master)
 - [RsaCtfTool](https://github.com/Ganapati/RsaCtfTool)
+- [CyberChef](https://0x1.gitlab.io/code/CyberChef/)
+- [DPAT (Domain Password Audit Tool)](https://github.com/clr2of8/DPAT): generates a report of password use stats from a hash dump
+- [Responder](https://github.com/lgandx/Responder): LLMNR, NBT-NS and MDNS poisoner
 
-### Windows
-- `whoami /priv`: list all privileges
-- `C:\Windows\Tesmp`: world writeable temp directory
-- `C:\Program Files (x86)\SystemScheduler\Events`: windows scheduled services event logs
-- `C:\Windows\System32\drivers\etc\hosts`: /etc/hosts for Windows
-- CMD
-	`sc query`: lists running services
-	`wevtutil`: retrieve info about event logs and publishers
-### Linux
-1. Storage
-    - Store enum script in `/tmp` or 
-1. Service/Process Exploitation
-    - mysql running as root
-1. Weak File Permissions
-    - readable /etc/shadow
-    - `find / -type f -user www-data 2>/dev/null`: find all files accessible by user www-data
-1. Sudo
-    - `sudo -l`: list sudo permissions for "user"
-    - Shell Escape Sequences
-    - Environment Variables
-1. SUID / SGID Executables
-    - `find / -type f -perm -u+s 2>/dev/null`: find all suid files
-    - `find / -type f -perm -g+s 2>/dev/null`: find all guid files
-    - known exploits (exploit-db / searchsploit)
-    - shared object injection
-    - environment variables
-    - abusing shell features
-1. Cron Jobs
-    - File Permissions
-    - PATH Environment Variable: you can plant a script if the you can write to a directory in the path, and the cronjob doesn't specify a full path
-    - Wildcards: check for `*` wildcards used in cronjobs
-1. Passwords & Keys
-    - history files
-    - config files
-    - ssh keys
-1. NFS
-	- `/etc/exports`: NFS config check for _root_squashing_
-1. Kernel Exploits
-1. Priv Esc Scripts
-1. [Restricted Shells](https://fireshellsecurity.team/restricted-linux-shell-escaping-techniques/)
-1. [Write your own shell code](https://axcheron.github.io/linux-shellcode-101-from-hell-to-shell/)
-
-## 5. Post Exploitation
-
+### Powershell Empire
+- [Powerview 3.0](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
 
 
 ## 6. Pivoting / Proxies
