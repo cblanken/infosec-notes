@@ -538,6 +538,8 @@ Take exhaustive notes to assist IT/system owner in cleanup and remediation.
 ## 8. Reporting
 Provide a *full format report* along with a breakdown including *remediation recommendations*.
 
+[SANS Rules of Engagement Sample](https://sansorg.egnyte.com/dl/bF4I3yCcnt/?)
+
 ### Templates
 - [OSCP Exam Report Markdown](https://github.com/noraj/OSCP-Exam-Report-Template-Markdown)
 
