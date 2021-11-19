@@ -1,8 +1,14 @@
 # Red Team Cheatsheet
 
 [Tib3rius Pentest Cheatsheets](https://github.com/Tib3rius/Pentest-Cheatsheets)
-## 1. OSINT / Reconnaissance
+## 1. OSINT / Passive Reconnaissance
 *Reconnaissance* is all about info gathering and can usually be done without directly interacting with the target(s) or any of their systems.
+
+### Methodology
+- [OSSTMM (Open Source Security Testing Methodology Manual) 3](https://www.isecom.org/OSSTMM.3.pdf)
+- [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
+- [NCSC CAF (Cyber Assessment Framework)](https://www.ncsc.gov.uk/collection/caf/caf-principles-and-guidance)
+- [Mozilla RRA (Rapid Risk Assessment)](https://infosec.mozilla.org/guidelines/risk/rapid_risk_assessment.html)
 
 ### Tools
 - General Search
@@ -10,33 +16,41 @@
     - [Bing](https://www.bing.com)
     - [DuckDuckGo](https://www.duckduckgo.com)
     - [Internet Archive](https://archive.org/)
-    - [Yandex](https://yandex.ru)
     - [Wikipedia](https://www.wikipedia.com)
+    - [Yandex](https://yandex.ru)
 - [PeopleFinder.com](https://www.PeopleFinder.com): person lookup, police records, background checks, social media etc.
-- Domain / Subdomains
+- IP / DNS Records / Domains / Subdomain Search
     - [who.is](https://who.is): domain name search
+        - [whois](https://linux.die.net/man/1/whois): CLI utility for `who.is`
+    - [ipinfo](https://ipinfo.io/)
+    - [nslookup](https://linux.die.net/man/1/nslookup): CLI to interactively query Internet name servers 
+    - [dig](https://linux.die.net/man/1/dig): CLI DNS lookup utility
+    - [dnsdumpster](https://dnsdumpster.com/): dns recon & research
+    - [sublist3r](https://tools.kali.org/information-gathering/sublist3r): subdomain enumuration with OSINT
+    - [Shodan](https://www.shodan.io/): open internet device search
+    - [crt.sh](https://crt.sh): TLS certificate database
     - [threatcrowd](https://threatcrowd.org/)
     - [AbusedIPDB](https://www.abuseipdb.com/)
     - [Talos Reputation Center](https://talosintelligence.com/reputation_center/lookup)
-    - [dnsdumpster](https://dnsdumpster.com/): dns recon & research
-    - [sublist3r](https://tools.kali.org/information-gathering/sublist3r): subdomain enumuration with OSINT
-- Images / Pictures
-    - [TinEye](https://tineye.com/): reverse image search
-    - [exiftool](https://exiftool.org/): image metadata extractor 
 - Email / Social Media
     - [hunter.io](https://hunter.io/): email search
     - [Namechk](https://namechk.com/): social media username lookup
     - [Lookup ID](https://lookup-id.com/): Facebook profile lookup
-- Web
-    - [wigle.net](https://wigle.net): catalog of wireless networks
-    - [Shodan](https://www.shodan.io/): open internet device search
-    - [builtwith.io](https://builtwith.com/): website stack profiler
-    - [Wappalyzer](https://www.wappalyzer.com/): website stack profiler
-- Knowledge Organization
-    - [Maltego](https://www.maltego.com/): graphical link analysis tool for gathering and connecting information
+- Images Search and Data Extraction
+    - [TinEye](https://tineye.com/): reverse image search
+    - [exiftool](https://exiftool.org/): image metadata extractor 
 - Maps / GPS / Location
     - [Google Maps](https://maps.google.com/)
     - [Map Customizer](https://www.mapcustomizer.com/)
+    - [wigle.net](https://wigle.net): catalog of wireless networks
+- Web
+    - [Wappalyzer](https://www.wappalyzer.com/): website stack profiler
+    - [builtwith.io](https://builtwith.com/): website stack profiler
+    - [OWASP favicon database](https://wiki.owasp.org/index.php/OWASP_favicon_database)
+    - [grep.app](https://grep.app/): search Github with grep, can be used to find exposed api keys, passwords etc.
+- Knowledge Organization
+    - [Maltego](https://www.maltego.com/): graphical link analysis tool for gathering and connecting information
+    - [Obisdian](https://obsidian.md/): markdown editor
     
 ## 2. Enumeration / Scanning
 *Enumeration* is necessary to map out the overall *attack surface* of the target(s).
