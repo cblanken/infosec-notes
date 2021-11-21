@@ -3,41 +3,56 @@
 ## Blogs / Other Resources
 - [DFIR Diva](https://dfirdiva.com/)
 - [threathunting.se](https://www.threathunting.se/)
-
+- [ACM Blog](https://www.activecountermeasures.com/blog/)
 
 ## Query Languages / DSLs
 - [EQL(Event Query Language)](https://eql.readthedocs.io/en/latest/)
 
-## Scanning
-- [Nessus](https://docs.tenable.com/nessus/Content/GetStarted.htm): a vulnerability scanner used in assessments and pen tests
+## Vulnerability Scanning and  Management
 - [OpenVAS](https://openvas.org/): Open vulnerability Assessment Scanner of the Greenbone Vulnerability Management (GVM) Solution
 - [Greenbone Docs](https://docs.greenbone.net/)
+- [Nuclei](https://nuclei.projectdiscovery.io/): community powered vulnerability scanner (open source)
+- [Nessus](https://docs.tenable.com/nessus/Content/GetStarted.htm): a vulnerability scanner used in assessments and pen tests
+- [Nexpose](https://www.rapid7.com/products/nexpose/): Rapid7 on-prem vulnerability scanner
+- [PingCastle](https://www.pingcastle.com/documentation/): vuln scanner and AD mapper
 
 ## System Monitoring
 - [SysMon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon)
 - [Splunk](https://docs.splunk.com/Documentation?_ga=2.100904193.1601637958.1597684046-190830518.1518030052)
 
-## Threat Management, Intelligence, and Hunting
-- [Active Countermeasures Network Threat Hunter Training](https://www.activecountermeasures.com/wp-content/uploads/2021/08/Network-Threat-Hunting-202108.pdf): [local pdf](docs/Network-Threat-Hunting-202108.pdf)
-- [VirusTotal](https://www.virustotal.com/gui/home/upload)
-- [Greynoise](https://www.greynoise.io/)
-- [AbuseIPDB](https://www.abuseipdb.com/): db of IPs displaying malicious behavior
-- [Talos Reputation Center](https://talosintelligence.com/reputation_center/lookup)
-- [MITRE](https://www.mitre.org/)
-    - [MITRE CVE](https://cve.mitre.org/): cyber common vulnerabilites and exploitations
-    - [MITRE ATT&CK](https://attack.mitre.org/): 
-    - [MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/): tool to visualize defensive coverage and map attacker tactics and techniques
-    - [MITRE CAR (Cyber Analytics Repository)](https://car.mitre.org/): knowledge base of analytics based on the MITRE ATT&CK adversary model
-    - [MITRE Shield](https://shield.mitre.org/) / [MITRE Engage](https://engage.mitre.org/): defensive knowledge base 
-- [BZAR](https://github.com/mitre-attack/bzar): Bro/Zeek ATT&CK-based analytics and reporting
-- [yara (Yet Another Ridiculous Acronym_)](https://github.com/virustotal/yara): the pattern-matching swiss knife
-- ISACs (Information Sharing and Anaylysis Centers)
-    - [US-CERT](https://us-cert.cisa.gov/)
-    - [AlienVAult OTX](https://otx.alienvault.com/)
-    - [ThreatConnect]()
-    - [MISP](https://www.misp-project.org/)
+## Logging / Log Analysis
+- [Osquery](https://github.com/osquery/osquery): Query endpoints with SQL syntax.
+- [LogonTracer](https://github.com/JPCERTCC/LogonTracer): investigate malicious Windows logon by analyzing Windows Event logs
 
-## Incident Response
+## Threat Hunting, Intelligence, and Management
+- Resources
+    - [Active Countermeasures Network Threat Hunter Training](https://www.activecountermeasures.com/wp-content/uploads/2021/08/Network-Threat-Hunting-202108.pdf): [local pdf](docs/Network-Threat-Hunting-202108.pdf)
+    - [VirusTotal](https://www.virustotal.com/gui/home/upload)
+    - [Robtex](https://www.robtex.com/): IP, hostname, and DNS lookup
+    - [ThreatMiner](https://www.threatminer.org/): 
+    - [Greynoise](https://www.greynoise.io/)
+    - [AbuseIPDB](https://www.abuseipdb.com/): db of IPs displaying malicious behavior
+    - [Talos Reputation Center](https://talosintelligence.com/reputation_center/lookup)
+    - [MITRE](https://www.mitre.org/)
+        - [MITRE CVE](https://cve.mitre.org/): common vulnerabilites and exploitations
+        - [MITRE ATT&CK](https://attack.mitre.org/): knowledge base of known tactics/techniques for threat actors
+        - [MITRE ATT&CK Navigator](https://mitre-attack.github.io/attack-navigator/): tool to visualize defensive coverage and attacker tactics & techniques
+        - [MITRE CAR (Cyber Analytics Repository)](https://car.mitre.org/): knowledge base of analytics based on the MITRE ATT&CK adversary model
+        - [MITRE Shield](https://shield.mitre.org/) / [MITRE Engage](https://engage.mitre.org/): defensive knowledge base 
+    - [BZAR](https://github.com/mitre-attack/bzar): Bro/Zeek ATT&CK-based analytics and reporting
+    - [yara (Yet Another Ridiculous Acronym)](https://github.com/virustotal/yara): the pattern-matching Swiss knife
+    - [OUI (Organizationally Unique Identifier) Lookup](https://www.wireshark.org/tools/oui-lookup.html): Lookup or for NIC manufacturers
+    - ISACs (Information Sharing and Anaylysis Centers)
+        - [US-CERT](https://us-cert.cisa.gov/)
+        - [AlienVAult OTX](https://otx.alienvault.com/)
+        - [ThreatConnect]()
+        - [MISP](https://www.misp-project.org/)
+    - [Malware Back Connect Ports spreadsheet](https://docs.google.com/spreadsheets/d/17pSTDNpa0sf6pHeRhusvWG6rThciE8CsXTSlDUAZDyo/edit#gid=0)
+
+#### Threat Hunting Procedures
+Hunt initiated by suspicious network or host behavior
+1. Identify Attack Vector
+
 
 ## Packet / Network Analysis
 - [tcpdump](https://www.tcpdump.org/)
