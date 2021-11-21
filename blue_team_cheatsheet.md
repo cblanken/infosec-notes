@@ -62,22 +62,16 @@ Hunt initiated by suspicious network or host behavior
 - [RITA (Real Intelligence Threat Analytics)](https://github.com/activecm/rita): [Webcast](https://www.activecountermeasures.com/webcasts/09-09-2020-acm-webcast-getting-started-with-rita/)
 - [FakeNet-NG](https://github.com/mandiant/flare-fakenet-ng): dynamic network analysis tool
 
-## Malware Analysis
-- [Binary Exploitation](binary_exploitation.md)
-- [YARA (Yet Another Ridiculous Acronym)](https://virustotal.github.io/yara/): a tool to help identify and classify malware
-    - [LOKI](https://github.com/Neo23x0/Loki): simple IOC and YARA Scanner
-    - [THOR Lite](https://www.nextron-systems.com/thor-lite/): free IOC and YARA Scanner
-    - [Fenrir](https://github.com/Neo23x0/Fenrir): free IOC and YARA Scanner (bash script)
-    - [VALHALLA](https://valhalla.nextron-systems.com/): YARA feed hosted by Nextron Systems (Florian Roth)
-- [Cuckoo Sandbox](https://cuckoosandbox.org/): automated malware analysis system and sandbox
-- [Python PE Module](https://pypi.org/project/pefile/): all PE file basic structures in Python
-- [pestudio](https://www.winitor.com/): malware assessment tool
-- [MalwareBazaar](https://bazaar.abuse.ch/): malware sample database
-- [REMnux](https://docs.remnux.org/): linux malware analysis toolkit distro
+## Digital Forensics
+- [Forensics Wiki](https://forensicswiki.xyz/page/Main_Page)
+- [Volatility](https://github.com/volatilityfoundation/volatility/wiki): memory forensics framework
+- [Autopsy](https://www.autopsy.com/) \([source](https://github.com/sleuthkit/autopsy)\): forensics platform for analyzing mobile devices and digital media
+
+## [Malware Analysis](./malware_analysis.md)
 
 ## Windows 
 ### [Sysinternals](https://docs.microsoft.com/en-us/sysinternals/)
-- [Live Sysinternals](https://live.sysinternals.com/): run sysinternals applications from the internet
+- [Live Sysinternals](https://live.sysinternals.com/): run Sysinternals applications from the internet
 - Networking Utilities
     - [TCPView](https://docs.microsoft.com/en-us/sysinternals/downloads/tcpview)
 - Process Utilities
