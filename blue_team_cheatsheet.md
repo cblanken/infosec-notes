@@ -85,16 +85,19 @@ Hunt initiated by suspicious network or host behavior
 - System Information
     - [PsInfo](https://docs.microsoft.com/en-us/sysinternals/downloads/psinfo)
     - [WinObj](https://docs.microsoft.com/en-us/sysinternals/downloads/winobj)
+- Active Directory
+    - [PlumHound](https://github.com/PlumHound/PlumHound): Bloodhound for Blue teamers
 - Misc
     - [BgInfo](https://docs.microsoft.com/en-us/sysinternals/downloads/bginfo): display system info on the desktop background
     - [RegJump](https://docs.microsoft.com/en-us/sysinternals/downloads/regjump): cmdlet that opens the `regedit` to the given path
     - [Strings](https://docs.microsoft.com/en-us/sysinternals/downloads/strings): similar to Linux `strings`
+
 ### Windows Event Logs
 - Windows event logs are usually stored in `.evt` or `.evtx` files in `C:\Windows\System32\winevt\Logs`
 - The logs can be accessed with:
     1. Event Viewer (can be launched with `eventvwr.msc`)
     1. `Wevtutil.exe` (cmd tool)
-    1. `Get-WinEvent` (PowerShell cmdlet)
+    1. `Get-WinEvent` (Powershell cmdlet)
 - There are 5 [types of events](https://docs.microsoft.com/en-us/windows/win32/eventlog/event-types):
     1. Error: a significant problem e.g. a service that fails to load on startup
     1. Warning: not necessarily significant but could cause issues later
@@ -103,12 +106,14 @@ Hunt initiated by suspicious network or host behavior
     1. Failure Audit: record of an failed audited security access
 - Important Events to watch out for
      - Windows Powershell
-        - 104: indicator of logs being clearted with 
+        - 104: indicator of logs being cleared with 
         - 400: indicator of Powershell downgrade attack
+- Windows Defender
+    - To view defender logs go to `Applications and Services Logs > Microsoft > Windows > Windows Defender` in Event Viewer. [Link](https://docs.microsoft.com/en-us/microsoft-365/security/defender-endpoint/troubleshoot-microsoft-defender-antivirus?view=o365-worldwide#windows-defender-av-ids)
 - [Events to Monitor](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/plan/appendix-l--events-to-monitor)
 - [Windows 10 and Windows Server 2016 security auditing reference](https://www.microsoft.com/en-us/download/confirmation.aspx?id=52630)
 - [Command line process auditing](https://docs.microsoft.com/en-us/windows-server/identity/ad-ds/manage/component-updates/command-line-process-auditing#try-this-explore-command-line-process-auditing)
-- [PowerShell ♥ the Blue Team](https://devblogs.microsoft.com/powershell/powershell-the-blue-team/) 
+- [Powershell ♥ the Blue Team](https://devblogs.microsoft.com/powershell/powershell-the-blue-team/) 
 - [Tampering with Windows Event Tracing](https://blog.palantir.com/tampering-with-windows-event-tracing-background-offense-and-defense-4be7ac62ac63?gi=24175d4957a9)
 - [EVTX-ATTACK-SAMPLES](https://github.com/sbousseaden/EVTX-ATTACK-SAMPLES)
 
@@ -154,7 +159,26 @@ Hunt initiated by suspicious network or host behavior
         </RuleGroup>
         ```
     - 11: File Created: log events when files are created or overwritten
-    - 12/13/14: Registry Event: looks for changes or modifiation to the registry
+    - 12/13/14: Registry Event: looks for changes or modification to the registry
     - 15: FileCreateStreamHash: look for any files created in a alternate data stream
     - 22: DNS Event: log all DNS queries and events
+
+[Black Hill Sysmon Event ID Breakdown](https://www.blackhillsinfosec.com/a-sysmon-event-id-breakdown/)
     
+### Splunk
+Splunk can ingest a lot of data from event logs, website logs, firewall logs, etc.
+
+- [Splunk Quick Reference](https://www.splunk.com/pdfs/solution-guides/splunk-quick-reference-guide.pdf)
+- [Splunk Docs](https://docs.splunk.com/Documentation)
+- [splunkbase](https://splunkbase.splunk.com/): database of Splunk apps
+
+### Honeypots
+- Tools
+    - [HoneyBadger](https://github.com/0x6d6f7468/honeybadger): active defense framework for targeted geolocation
+- Types
+    - Low-interaction: little interactivity to the adversary. Adversaries can't perform any post-exploitation activity
+    - Medium-interaction: collect data by emulating vulnerable services and the underlying OS
+    - High-interaction: complete systems that are usually VMs that include deliberate vulns
+- Deployment
+    - Internal: inside a LAN
+    - External: deployed on the open Internet
