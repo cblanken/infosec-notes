@@ -210,9 +210,10 @@ Never jump to the *exploitation* phase too early. You __must__ perform adequate 
 
     
 ### [Web Exploitation](web.md)
-
 ----
 
+### [Binary Exploitation](./binary_exploitation)
+----
 
 ### Network Services
 #### Telnet
