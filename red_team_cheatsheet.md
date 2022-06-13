@@ -7,8 +7,7 @@
 ### Methodology
 - [OSSTMM (Open Source Security Testing Methodology Manual) 3](https://www.isecom.org/OSSTMM.3.pdf)
 - [NIST Cybersecurity Framework](https://www.nist.gov/cyberframework)
-- [NCSC CAF (Cyber Assessment Framework)](https://www.ncsc.gov.uk/collection/caf/caf-principles-and-guidance)
-- [Mozilla RRA (Rapid Risk Assessment)](https://infosec.mozilla.org/guidelines/risk/rapid_risk_assessment.html)
+- [NCSC CAF (Cyber Assessment Framework)](https://www.ncsc.gov.uk/collection/caf/caf-principles-and-guidance) [Mozilla RRA (Rapid Risk Assessment)](https://infosec.mozilla.org/guidelines/risk/rapid_risk_assessment.html)
 
 ### Tools
 - General Search
@@ -18,20 +17,23 @@
     - [Internet Archive](https://archive.org/)
     - [Wikipedia](https://www.wikipedia.com)
     - [Yandex](https://yandex.ru)
-- [PeopleFinder.com](https://www.PeopleFinder.com): person lookup, police records, background checks, social media etc.
+    - [PeopleFinder.com](https://www.PeopleFinder.com): person lookup, police records, background checks, social media etc.
+    - [`theHarvester`](https://www.kali.org/tools/theharvester/): tool to gather OSINT on a domain
 - IP / DNS Records / Domains / Subdomain Search
-    - [who.is](https://who.is): domain name search
-        - [whois](https://linux.die.net/man/1/whois): CLI utility for `who.is`
-    - [ipinfo](https://ipinfo.io/)
-    - [nslookup](https://linux.die.net/man/1/nslookup): CLI to interactively query Internet name servers 
+    - [AbusedIPDB](https://www.abuseipdb.com/)
+    - [Expired Domains.net](https://www.expireddomains.net/): database of expired domain names and domains pending deletion
+    - [Shodan](https://www.shodan.io/): open internet device search
+    - [Talos Reputation Center](https://talosintelligence.com/reputation_center/lookup)
+    - [crt.sh](https://crt.sh): TLS certificate database
     - [dig](https://linux.die.net/man/1/dig): CLI DNS lookup utility
     - [dnsdumpster](https://dnsdumpster.com/): dns recon & research
+    - [ipify](https://www.ipify.org/): IP geolocation API
+    - [ipinfo](https://ipinfo.io/)
+    - [nslookup](https://linux.die.net/man/1/nslookup): CLI to interactively query Internet name servers 
     - [sublist3r](https://tools.kali.org/information-gathering/sublist3r): subdomain enumuration with OSINT
-    - [Shodan](https://www.shodan.io/): open internet device search
-    - [crt.sh](https://crt.sh): TLS certificate database
     - [threatcrowd](https://threatcrowd.org/)
-    - [AbusedIPDB](https://www.abuseipdb.com/)
-    - [Talos Reputation Center](https://talosintelligence.com/reputation_center/lookup)
+    - [who.is](https://who.is): domain name search
+        - [whois](https://linux.die.net/man/1/whois): CLI utility for `who.is`
 - Email / Social Media
     - [hunter.io](https://hunter.io/): email search
     - [Namechk](https://namechk.com/): social media username lookup
@@ -56,12 +58,13 @@
 *Enumeration* is necessary to map out the overall *attack surface* of the target(s).
 
 ### Tools
-- [ping](https://www.computerhope.com/unix/uping.htm): ICMP network probe
-- [telnet](https://www.computerhope.com/jargon/t/telnet.htm): utility for interactive sessions over the TELNET
-- [traceroute](https://www.computerhope.com/unix/utracero.htm): find network route taken by packets
-- [netcat (nc)](https://www.linuxfordevices.com/tutorials/netcat-command-in-linux): network Swiss army knife
 - [arp-scan](http://www.royhills.co.uk/wiki/index.php/Arp-scan_User_Guide): network scanner using ARP
+- [dnsenum](https://www.kali.org/tools/dnsenum/): perl script to enumerate DNS information of a domain
+- [dnsrecon](https://pentestlab.blog/2012/11/13/dns-reconnaissance-dnsrecon/)
+- [enum4linux-ng](https://github.com/cddmp/enum4linux-ng)
 - [masscan](https://danielmiessler.com/study/masscan/): fast IP port scanner 
+- [metasploit](https://www.metasploit.com/): DB of easily searchable and configurable exploits
+- [netcat (nc)](https://www.linuxfordevices.com/tutorials/netcat-command-in-linux): network Swiss army knife
 - [nmap](https://nmap.org/)
     ```bash
     # Note <host> can be replaced with any IP in standard CIDR notation
@@ -141,9 +144,11 @@
     ```
     - [NSE (Nmap Scripting Engine)](https://nmap.org/book/man-nse.html)
 	- Don't forget to lookup `nmap` script, there are many available for finding vulns and enumerating a host for many service
-- [dnsrecon](https://pentestlab.blog/2012/11/13/dns-reconnaissance-dnsrecon/)
-- [enum4linux-ng](https://github.com/cddmp/enum4linux-ng)
-- [metasploit](https://www.metasploit.com/): DB of easily searchable and configurable exploits
+- [ping](https://www.computerhope.com/unix/uping.htm): ICMP network probe
+- [scanless](https://github.com/vesche/scanless): an online port scan scraper
+- [telnet](https://www.computerhope.com/jargon/t/telnet.htm): utility for interactive sessions over the TELNET
+- [traceroute](https://www.computerhope.com/unix/utracero.htm): find network route taken by packets
+- [RustScan](https://rustscan.github.io/RustScan/): fast port scanner that automatically pipes to nmap
 - SMB Enum
     - [smbmap](https://tools.kali.org/information-gathering/smbmap): enumerate smb shares
     - [smbtree](https://linux.die.net/man/1/smbtree)
@@ -155,7 +160,6 @@
         ```bash
         # Catchall nmap SMB enum scan
         nmap -d --script smb-enum-domains.nse,smb-enum-groups.nse,smb-enum-processes.nse,smb-enum-services.nse,smb-enum-sessions.nse,smb-enum-shares.nse,smb-enum-users.nse -o nmapSMB -p445 <host>
-
         ```
 - Fuzzing / Web Domain Enumeration
     - [dirb](https://tools.kali.org/web-applications/dirb): enum web directories/files
@@ -188,7 +192,7 @@ Never jump to the *exploitation* phase too early. You __must__ perform adequate 
 - [NVD](https://nvd.nist.gov/vuln/search)
 - [Exploit-DB](https://www.exploit-db.com/)
 - [Rapid7](https://www.rapid7.com/db/)
-- [searchsploit](https://www.exploit-db.com/searchsploit): searches [exploit.db](https://exploit.db)
+- [searchsploit](https://www.exploit-db.com/searchsploit): searches [exploit.db](https://exploit-db.com)
 
 ### Tools
 - [Metasploit Notes](metasploit.md) / [Metasploit](https://docs.rapid7.com/metasploit/)
@@ -216,12 +220,16 @@ Never jump to the *exploitation* phase too early. You __must__ perform adequate 
 ----
 
 ### Network Services
+
 #### Telnet
+
 #### SMB (Server Message Blocks)
 - `enum4linux-ng`, `smclient`
+
 #### FTP / SFTP
 - `ftp`
     - If you ever download file via FTP, may need to use the `binary` command, which sets the transfer type and supports binary images (default is `ascii`).
+
 #### [Kerberos](https://docstore.mik.ua/orelly/networking_2ndEd/fire/ch21_05.htm)
 Kerberos is the default authentication services for Windows domains. [Kerberos Auth 101](https://redmondmag.com/articles/2012/02/01/understanding-the-essentials-of-the-kerberos-protocol.aspx)
 - Terms
@@ -254,13 +262,21 @@ Kerberos is the default authentication services for Windows domains. [Kerberos A
 - ASREPRoasting: 
 - Pass the Ticket w/mimikatz: dump the TGT from LSASS memory
 - Golder/Silver Ticcket Attacks w/mimikatz
+
 #### NFS
 - `showmount e <host>` - shows mount info for an NFS server
 - mount the NFS share with `sudo mount -t nfs <IP>:<SHARE> /mount/location`
+
 #### SMTP
 - enumerate with nmap script or metasploit (auxiliary/scanner/smtp/smtp-enum)
+
 #### MySQL
 - enumerate with nmap script or metasploit (auxiliary/scanner/mysql)
+
+#### NoSQL
+- [Redis](https://redis.io/): in-memory data strucdture store
+- [MongoDB](https://www.mongodb.com/): popular NoSQL document store
+
 #### Git
 - [GitTools](https://github.com/internetwache/GitTools): scripts for pwning .git repos
 
@@ -436,6 +452,16 @@ App Locker is an application allowlisting technology introduced with Windows 7
     - `hostname`: may reveal target system's role within the network
     - `uname -a`: additional system info such as hostname, kernel version, distribution
     - `/etc/issue`: contains OS info (can be easily changed though)
+    - `/etc/passwd`: contains users
+    - `/etc/shadow`: contains password hashes
+    - `/etc/group`: contains user groups
+    - `/etc/hosts`: hosts the user/system may communicate with
+    - `/etc/hostname`: hostname of the host
+    - `/etc/motd`: message of the day
+    - `/etc/mysql/my.cnf`: mysql db config
+    - `/proc/[0-9*/fd/[0-9]*`: first number is the PID, second is the file descriptor
+    - `/proc/self/environ`:
+    - `/proc/cmdline`:
     - `/proc/version`: kernel version
     - The `proc` filesystem (`procfs`) is a commonly installed on Linux contains useful information on the system processes
 1. User Info
@@ -445,7 +471,6 @@ App Locker is an application allowlisting technology introduced with Windows 7
     - Config Files
         - `~/.bashrc`: bash config
         - `~/.ssh`: ssh keys
-    
 1. Processes (CHECK WHAT THE SYSTEM IS RUNNING)
     - `ps -A` or `ps -e` to view all processes
     - `ps -eo euser,ruser,suser,fuser,f,comm,label`: get security info
@@ -453,7 +478,7 @@ App Locker is an application allowlisting technology introduced with Windows 7
         - Search for services such as `mysql`,`postgres`,`tmux` etc. running as root
         - Consider searching by processes run by particular users or groups
 1. Sudo / SUID / SGID / Executables / Weak File Permissions
-    - [gtfobins](https://gtfobins.github.io/)
+    - [gtfobins](https://gtfobins.github.io/): guide for common shell escapes
     - `sudo -l`: list sudo permissions for current user
     - `find / -type f -perm -u+s 2>/dev/null`: find all suid files
     - `find / -type f -perm -g+s 2>/dev/null`: find all guid files
@@ -477,17 +502,30 @@ App Locker is an application allowlisting technology introduced with Windows 7
     - PATH Environment Variable: you can plant a script if the you can write to a directory in the path, and the cronjob doesn't specify a full path or uses a wildcard `*`
 1. Storage
     - Store enum scripts, exploits, etc.  in `/tmp/` or `/dev/shm/`
-    - Shell Escape Sequences
 1. NFS
     - `showmount -e <host>`: show NFS server's export list
     - `/etc/exports`: NFS config check for _root_squashing_
-1. Kernel Exploits
-1. Priv Esc Scripts
 1. [Restricted Shells](https://fireshellsecurity.team/restricted-linux-shell-escaping-techniques/)
 1. [Write your own shell code](https://axcheron.github.io/linux-shellcode-101-from-hell-to-shell/)
 
 ### Docker / VMs
 - [deepce](https://github.com/stealthcopter/deepce)
+
+### Cloud 
+#### AWS
+AWS CLI recon
+```bash
+# Configure profile
+aws configure --profile PROFILENAME
+# Find the account ID belong to an access key
+aws sts get-access-key-info --access-key-id AKIAEXAMPLE 
+# L Determine the username of the access key you're using
+aws sts get-caller-identity --profile PROFILENAME
+# List all EC2 instances running in an account
+aws ec2 describe-instances --output text --profile PROFILENAME
+# List all EC2 instances in an account in a different region
+aws ec2 describe-instances --output text --region us-east-1 --profile PROFILENAME
+```
 
 ## 5. Post Exploitation
 ### Passwords / Cracking Hashes / Bypassing Auth
@@ -519,7 +557,8 @@ App Locker is an application allowlisting technology introduced with Windows 7
 - [DPAT (Domain Password Audit Tool)](https://github.com/clr2of8/DPAT): generates a report of password use stats from a hash dump
 - [Responder](https://github.com/lgandx/Responder): LLMNR, NBT-NS and MDNS poisoner
 
-### Powershell Empire
+### Persistence
+#### Powershell Empire
 - [Powerview 3.0](https://gist.github.com/HarmJ0y/184f9822b195c52dd50c379ed3117993)
 
 
@@ -538,8 +577,7 @@ Take exhaustive notes to assist IT/system owner in cleanup and remediation.
 
 ## 8. Reporting
 Provide a *full format report* along with a breakdown including *remediation recommendations*.
-
-[SANS Rules of Engagement Sample](https://sansorg.egnyte.com/dl/bF4I3yCcnt/?)
+- [SANS Rules of Engagement Sample](https://sansorg.egnyte.com/dl/bF4I3yCcnt/?)
 
 ### Templates
 - [OSCP Exam Report Markdown](https://github.com/noraj/OSCP-Exam-Report-Template-Markdown)
@@ -553,73 +591,10 @@ Provide a *full format report* along with a breakdown including *remediation rec
     ```
 
 ## Powershell
+- [Cheatsheet](../cheatsheets/powershell.md)
 - [Nishang](https://github.com/samratashok/nishang): powershell offensive scripts and payloads
 
-## Active Directory (AD)
-*Active Directory* (AD) is the directory service for Windows Domain Networks. AD allows for control and monitoring of all a companies users through a single *domain controller*. It allows a single user to sign into any computer on the AD network.
-
-- Domain Controller: holds the `AD DS data store` and allows admin access to domain resources.
-- AD DS (Domain Services) Data Store
-	- `NTDS.dit`: a database of all the AD domain controller info such as password hashes for domain users. By default the `NTDS.dit` is stored in `%SystemRoot%\NTDS` and only accessible by the domain controller.
-- Forests, Trees, Domains
-	- Forest: a collection of one or more domain trees in an AD network
-		- Trees - A hierarchy of domains in Active Directory Domain Services
-		- Domains - Used to group and manage objects 
-		- Organizational Units (OUs) - Containers for groups, computers, users, printers and other OUs
-		- Trusts - Allows users to access resources in other domains
-		- Objects - users, groups, printers, computers, shares
-		- Domain Services - DNS Server, LLMNR, IPv6
-		- Domain Schema - Rules for object creation
-- Users
-	- Domain Admins: the big boss, only ones with access to the domain controller.
-	- Service Accounts (can also be Domain Admins) these mostly aren't used except for service maintenance.
-	- Local Admins: these users can make changes on local machines as admin but __cannot__ access the domain controller.
-	- Domain users: everyday users, may have local admin to machines to machinens they have access to. 
-- Groups
-	- Security Groups: these groups can specify permissions for many users
-	- Default Security Groups
-		- Domain Controllers: all domain controllers in the domain
-		- Domain Guests: all domain guests
-		- Domain User: all domain users
-		- Domain Computers: all workstations and servers joined to the domain
-		- Domain Admins: designated admins of the domain
-		- Enterprise Admins: designated admins of the enterprise
-		- Schema Admins: designated admins of the schema
-		- DNS Admins: 
-		- DNS Update Proxy: DNS clients who are permitted to perform dynamic updates on behalf of some othe rclients (such as DHCP servers)
-		- Allowed RODC Password Replication Group: members can have their passwords replicated to all read-only domain ccontrollers in the domain
-		- Group Policy Creator Owners: members can modify group policy for the domain
-		- Denied RODC Password Replication Group: members cannot have their passwords replicated to any read-only domain controllers in the domain
-		- Protected users: members are affored additional protections against authentication security threats.
-		- Cert Publishers: members are permitted to publish certificates to the directory
-		- Enterprise Read-Only Domain Controllers: members ccan perform admin actions on key objects within the forest
-		- Cloneable Domain Controllers: members that are domain controllers can be cloned
-		- RAS and IAS Servers: servers in this group can access remote access properties of users
-	- Distribution Groups: these groups can specify email distribution lists.
-- Trusts: a mechanism for users in the network to gain access to other resources in the domain. Mostly truts outline the way domains inside a forest communicate with each other.
-	- Directional Trusts: the direction of the trust flows from a *trusting* domain to a *trusted* domain
-	- Transitive: the trust relationship expands beyond just two domains to include to include other trusted domains	
-- Policies: dictate how the server operates and what rules it will or won't follow. These rules apply to the entire domain.
-- Domain Services + Auth
-    - *Domain Services* are just services the domain controller provides to the rest of the domain or tree.
-    - Default Domain Services
-		- LDAP (Lightweigth Directory Access Protocol): provides communication between applications and directory services
-		- Certificate Services: allows the domain controller to create, validate and revoke public key certificates
-		- DNS, LLMNR, NBT-NS: domain name services for identifying IP hostnames
-	- Authentication: The most important and vulnerable part of AD. Two type: NTLM and Kerberos. 
-		- NTLM: default Windows auth protocol uses an encrypted challenge/response
-		- Kerberos: default auth service for AD, uses ticket-granting tickets and service tickets to authenticate users
-- Azure (AD in the Cloud)
-
-	|Windows Server AD|Azure AD
-	|---|---
-	|LDAP|Rest APIs
-	|NTLM|OAuth/SAML
-	|Kerberos|OpenID
-	|OU Tree|Flat Structure
-	|Domains and Forests|Tenants
-	|Trusts|Guests
-
+## [Active Directory (AD)](./active_directory.md)
 
 ## Auth / LSASS.exe
 - [NTLM Relay](https://en.hackndo.com/ntlm-relay/)

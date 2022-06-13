@@ -1,4 +1,4 @@
-# Redteam Reporting Notes
+# Redteam Reporting
 
 Ref: Hack for Show Report for Dough Part II Talk by Brian "BB" King
 
@@ -7,7 +7,6 @@ Ref: Hack for Show Report for Dough Part II Talk by Brian "BB" King
 - Your report will influence what actions will be taken businesses will perform to better protect themselves.
 - Your report is your product. It's a series of scenes. You are storyteller. Tell the story.
 
-
 ## Scanners
 - Never just copy-paste scanner output
 - How you _present_ your information is __MORE IMPORTANT__ than the information itself
@@ -15,7 +14,6 @@ Ref: Hack for Show Report for Dough Part II Talk by Brian "BB" King
     - apply your expertise
     - be better than a scanner
 - Scanner output has no context, there's no story there
-
 
 ## Make It Obvious: don't just show, also tell
 - Use highlights and appropriate context for any screenshots
