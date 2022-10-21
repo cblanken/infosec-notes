@@ -16,10 +16,12 @@
     - [DuckDuckGo](https://www.duckduckgo.com)
     - [Internet Archive](https://archive.org/)
     - [Wikipedia](https://www.wikipedia.com)
-    - [Yandex](https://yandex.ru)
+    - [Yandex](https://yandex.com)
     - [PeopleFinder.com](https://www.PeopleFinder.com): person lookup, police records, background checks, social media etc.
-    - [`theHarvester`](https://www.kali.org/tools/theharvester/): tool to gather OSINT on a domain
+    - [theHarvester](https://www.kali.org/tools/theharvester/): tool to gather OSINT on a domain
+    - [DeHashed](https://dehashed.com/): paied service to search 
 - IP / DNS Records / Domains / Subdomain Search
+    - [assetfinder](https://github.com/tomnomnom/assetfinder): a tool to find subdomains related to a given domain
     - [AbusedIPDB](https://www.abuseipdb.com/)
     - [Expired Domains.net](https://www.expireddomains.net/): database of expired domain names and domains pending deletion
     - [Shodan](https://www.shodan.io/): open internet device search
@@ -29,15 +31,25 @@
     - [dnsdumpster](https://dnsdumpster.com/): dns recon & research
     - [ipify](https://www.ipify.org/): IP geolocation API
     - [ipinfo](https://ipinfo.io/)
+    - [MayorSecDNSScan](https://github.com/dievus/msdnsscan): DNE enumeration tool by TheMayor
     - [nslookup](https://linux.die.net/man/1/nslookup): CLI to interactively query Internet name servers 
+    - [phonebook.cz](https://phonebook.cz/): email and domain lookup based on a given domain
     - [sublist3r](https://tools.kali.org/information-gathering/sublist3r): subdomain enumuration with OSINT
     - [threatcrowd](https://threatcrowd.org/)
+        - [visualping](https://visualping.io/): monitor websites for visual changes
     - [who.is](https://who.is): domain name search
         - [whois](https://linux.die.net/man/1/whois): CLI utility for `who.is`
 - Email / Social Media
-    - [hunter.io](https://hunter.io/): email search
-    - [Namechk](https://namechk.com/): social media username lookup
+    - [Email Hippo](https://tools.emailhippo.com/)
+    - [Have I Been Pwned](https://haveibeenpwned.com/): lookup for emails or phones in data breaches
     - [Lookup ID](https://lookup-id.com/): Facebook profile lookup
+    - [Namechk](https://namechk.com/): social media username lookup
+    - [Sherlock](https://github.com/sherlock-project/sherlock): tool to search usernames across social networks
+    - [Twitter](https://twitter.com/)
+        - [Twitter advanced search operators](https://developer.twitter.com/en/docs/twitter-api/v1/rules-and-filtering/search-operators)
+        - [twint](https://github.com/twintproject/twint): a Twitter scraping and OSINT tool
+    - [WeakestLink](https://github.com/shellfarmer/WeakestLink): browser extension to enumerate users from Linked company pages
+    - [hunter.io](https://hunter.io/): email search
 - Images Search and Data Extraction
     - [TinEye](https://tineye.com/): reverse image search
     - [exiftool](https://exiftool.org/): image metadata extractor 
@@ -45,11 +57,15 @@
     - [Google Maps](https://maps.google.com/)
     - [Map Customizer](https://www.mapcustomizer.com/)
     - [wigle.net](https://wigle.net): catalog of wireless networks
+- Phone / Cellphone
+    - [phoneinfoga](https://github.com/sundowndev/phoneinfoga): OSINT framework for phone numbers
 - Web
+    - [OWASP favicon database](https://wiki.owasp.org/index.php/OWASP_favicon_database)
     - [Wappalyzer](https://www.wappalyzer.com/): website stack profiler
     - [builtwith.io](https://builtwith.com/): website stack profiler
-    - [OWASP favicon database](https://wiki.owasp.org/index.php/OWASP_favicon_database)
     - [grep.app](https://grep.app/): search Github with grep, can be used to find exposed api keys, passwords etc.
+- Frameworks
+    - [recon-ng](https://github.com/lanmaster53/recon-ng): OSINT harvesting tool from open sources
 - Knowledge Organization
     - [Maltego](https://www.maltego.com/): graphical link analysis tool for gathering and connecting information
     - [Obisdian](https://obsidian.md/): markdown editor
@@ -62,6 +78,7 @@
 - [dnsenum](https://www.kali.org/tools/dnsenum/): perl script to enumerate DNS information of a domain
 - [dnsrecon](https://pentestlab.blog/2012/11/13/dns-reconnaissance-dnsrecon/)
 - [enum4linux-ng](https://github.com/cddmp/enum4linux-ng)
+- [geeMailUserFinder](https://github.com/dievus/geeMailUserFinder): Gmail user enumeration tool by TheMayor
 - [masscan](https://danielmiessler.com/study/masscan/): fast IP port scanner 
 - [metasploit](https://www.metasploit.com/): DB of easily searchable and configurable exploits
 - [netcat (nc)](https://www.linuxfordevices.com/tutorials/netcat-command-in-linux): network Swiss army knife
@@ -144,6 +161,7 @@
     ```
     - [NSE (Nmap Scripting Engine)](https://nmap.org/book/man-nse.html)
 	- Don't forget to lookup `nmap` script, there are many available for finding vulns and enumerating a host for many service
+- [Oh365UserFinder](https://github.com/dievus/Oh365UserFinder): Office 365 email enumeration tool by TheMayor
 - [ping](https://www.computerhope.com/unix/uping.htm): ICMP network probe
 - [scanless](https://github.com/vesche/scanless): an online port scan scraper
 - [telnet](https://www.computerhope.com/jargon/t/telnet.htm): utility for interactive sessions over the TELNET
@@ -164,6 +182,7 @@
 - Fuzzing / Web Domain Enumeration
     - [dirb](https://tools.kali.org/web-applications/dirb): enum web directories/files
     - [dirbuster](https://tools.kali.org/web-applications/dirbuster): enum web directories/files
+    - [feroxbuster](https://github.com/epi052/feroxbuster)
     - [gobuster](https://github.com/OJ/gobuster): enum web directories/files
     - [wfuzz](https://wfuzz.readthedocs.io/en/latest/): web app bruteforcer
     - [ffuf (Fuzz Faster U Fool)](https://github.com/ffuf/ffuf): a fast web fuzzer written in Go
@@ -551,7 +570,7 @@ aws ec2 describe-instances --output text --region us-east-1 --profile PROFILENAM
 - [CrackMapExec](https://ptestmethod.readthedocs.io/en/latest/cme.html)
 - [gosecretdump](https://github.com/C-Sto/gosecretsdump)
 - [Hashes.com](https://hashes.com/en/tools/hash_identifier)
-- [hash-identifier](https://gitlab.com/kalilinux/packages/hash-identifier/-/tree/kali/master)
+- [hash-identifier](https://gitlab.com/kalilinux/packages/hash-identifier/-/tree/kali/master): program to identify different types of hashes
 - [RsaCtfTool](https://github.com/Ganapati/RsaCtfTool)
 - [CyberChef](https://0x1.gitlab.io/code/CyberChef/)
 - [DPAT (Domain Password Audit Tool)](https://github.com/clr2of8/DPAT): generates a report of password use stats from a hash dump
