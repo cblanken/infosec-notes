@@ -1,9 +1,16 @@
 # Blue Team Cheatsheet
 
+## Best Practices
+- [CISA Technical Approaches to Uncovering and Remediating Malicious Activity](https://www.cisa.gov/uscert/ncas/alerts/aa20-245a)
+
 ## Blogs / Other Resources
 - [DFIR Diva](https://dfirdiva.com/)
 - [threathunting.se](https://www.threathunting.se/)
-- [ACM Blog](https://www.activecountermeasures.com/blog/)
+- [ACM / ActiveCounterMeasures Blog](https://www.activecountermeasures.com/blog/)
+
+## AppSec
+- [OWASP Cheat Sheet Series](https://cheatsheetseries.owasp.org/index.html): collection of OWASP appsec cheat sheets
+- [OWASP Dependency-Check](https://owasp.org/www-project-dependency-check/): an SCA (Software Composiition Analysis) tool that tries to detect publically disclosed vulnerabilities in a project's dependencies
 
 ## Query Languages / DSLs
 - [EQL(Event Query Language)](https://eql.readthedocs.io/en/latest/)
@@ -20,9 +27,19 @@
 - [SysMon](https://docs.microsoft.com/en-us/sysinternals/downloads/sysmon)
 - [Splunk](https://docs.splunk.com/Documentation?_ga=2.100904193.1601637958.1597684046-190830518.1518030052)
 
+## Server Analysis / System Hardening
+- [CIS Benchmarks](https://www.cisecurity.org/cis-benchmarks/): CIS standards for best-practice security configuration guides for operating systems, application, network devices etc.
+### What to look for?
+- key configs for the server
+- key processes for the server to run: Ping, Port, Parse
+- how are users stored and how can it be audited?
+- where are the logs?
+
 ## Logging / Log Analysis
-- [Osquery](https://github.com/osquery/osquery): Query endpoints with SQL syntax.
-- [LogonTracer](https://github.com/JPCERTCC/LogonTracer): investigate malicious Windows logon by analyzing Windows Event logs
+- [What2Log](https://what2log.com/): centralized resource of of what/how logs should be monitored
+- [Osquery](https://github.com/osquery/osquery): Query endpoints with SQL syntax
+- [JPCert](https://jpcertcc.github.io/ToolAnalysisResultSheet/): 
+    - [LogonTracer](https://github.com/JPCERTCC/LogonTracer): investigate malicious Windows logon by analyzing Windows Event logs
 
 ## Threat Hunting, Intelligence, and Management
 - Resources
@@ -31,6 +48,10 @@
     - [Robtex](https://www.robtex.com/): IP, hostname, and DNS lookup
     - [ThreatMiner](https://www.threatminer.org/): 
     - [Greynoise](https://www.greynoise.io/)
+    - [abuse.ch](https://abuse.ch/)
+        - [ThreatFox](https://threatfox.abuse.ch/)
+        - [MalwareBazaar](https://bazaar.abuse.ch/)
+        - [SSL Blocklist](https://sslbl.abuse.ch/)
     - [AbuseIPDB](https://www.abuseipdb.com/): db of IPs displaying malicious behavior
     - [Talos Reputation Center](https://talosintelligence.com/reputation_center/lookup)
     - [MITRE](https://www.mitre.org/)
@@ -48,6 +69,9 @@
         - [ThreatConnect]()
         - [MISP](https://www.misp-project.org/)
     - [Malware Back Connect Ports spreadsheet](https://docs.google.com/spreadsheets/d/17pSTDNpa0sf6pHeRhusvWG6rThciE8CsXTSlDUAZDyo/edit#gid=0)
+    - [LookingGlass Threat Map](https://map.lookingglasscyber.com/): realtime threat map
+#### Threat Hunting Tools
+- [DeepBlueCLI](https://github.com/sans-blue-team/DeepBlueCLI): a powershell module for threat hunting via Windows Event logs
 
 #### Threat Hunting Procedures
 Hunt initiated by suspicious network or host behavior
@@ -57,15 +81,29 @@ Hunt initiated by suspicious network or host behavior
 ## Packet / Network Analysis
 - [tcpdump](https://www.tcpdump.org/)
 - [Wireshark](https://www.wireshark.org/)
-- [tshark](https://tshark.dev/)
-- [zeek](https://docs.zeek.org/en/master/)
-- [RITA (Real Intelligence Threat Analytics)](https://github.com/activecm/rita): [Webcast](https://www.activecountermeasures.com/webcasts/09-09-2020-acm-webcast-getting-started-with-rita/)
+- [tshark](https://tshark.dev/): wireshark cli
+- [zeek](https://docs.zeek.org/en/master/): a passive, open-source network traffic analyzer
+- [RITA (Real Intelligence Threat Analytics)](https://github.com/activecm/rita): [Webcast](https://www.activecountermeasures.com/webcasts/09-09-2020-acm-webcast-getting-started-with-rita/): open source framework for network traffic analysis
 - [FakeNet-NG](https://github.com/mandiant/flare-fakenet-ng): dynamic network analysis tool
 
-## Digital Forensics
-- [Forensics Wiki](https://forensicswiki.xyz/page/Main_Page)
-- [Volatility](https://github.com/volatilityfoundation/volatility/wiki): memory forensics framework
+## Digital / Memory Forensics
 - [Autopsy](https://www.autopsy.com/) \([source](https://github.com/sleuthkit/autopsy)\): forensics platform for analyzing mobile devices and digital media
+- [Detect-It-Easy](https://github.com/horsicq/Detect-It-Easy): program for determining types of files
+- [FTK Imager](https://www.exterro.com/ftk-imager): memdump tool
+- [Forensics Wiki](https://forensicswiki.xyz/page/Main_Page)
+- [MX Toolbox](https://mxtoolbox.com/): MX record domain lookup
+- [Volatility](https://github.com/volatilityfoundation/volatility/wiki): memory forensics framework
+    - [netscan](https://volatilityfoundation.github.io/volatility/d7/d6c/classvolatility_1_1plugins_1_1netscan_1_1_netscan.html): scan a Windows image for network connections and sockets
+- [WinPmem](https://github.com/Velocidex/WinPmem): memdump tool
+- Mounting images
+    ```bash
+    # get partition layout info
+    mmls <image> 
+    # create mount point
+    sudo mkdir -p /mnt/<image>
+    # mount image
+    sudo mount <image> -o loop,ro,norecovery,offset$((<offset>*<sector_size>)) /mnt/<image>
+    ```
 
 ## [Malware Analysis](./malware_analysis.md)
 
@@ -172,9 +210,14 @@ Splunk can ingest a lot of data from event logs, website logs, firewall logs, et
 - [Splunk Docs](https://docs.splunk.com/Documentation)
 - [splunkbase](https://splunkbase.splunk.com/): database of Splunk apps
 
-### Honeypots
+### Active Defense
+#### Honeypots / honeytokens / honeyports / honeyshares / honey APs
 - Tools
     - [HoneyBadger](https://github.com/0x6d6f7468/honeybadger): active defense framework for targeted geolocation
+    - [Cowrie](https://github.com/cowrie/cowrie): SSH/Telnet honeypot
+    - [Portspoof](https://github.com/drk1wi/portspoof): camouflage your services by spoofing all open ports on a host
+    - [Spidertrap](https://github.com/strandjs/IntroLabs/blob/master/IntroClassFiles/Tools/IntroClass/Spidertrap.md)
+    - [CanaryTokens](https://www.canarytokens.org/generate) / [thinkst](https://blog.thinkst.com/p/canarytokensorg-quick-free-detection.html): implants web bug style traps in files like docs and emails, database queries, process executions and other files
 - Types
     - Low-interaction: little interactivity to the adversary. Adversaries can't perform any post-exploitation activity
     - Medium-interaction: collect data by emulating vulnerable services and the underlying OS
