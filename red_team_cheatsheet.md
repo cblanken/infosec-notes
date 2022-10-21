@@ -11,7 +11,7 @@
 
 ### Tools
 - General Search
-    - [Google](https://www.google.com) / [Google Dorking](https://exposingtheinvisible.org/guides/google-dorking/)
+    - [Google](https://www.google.com) / [Google Dorking](https://exposingtheinvisible.org/guides/google-dorking/) / [Google Search Operators](https://ahrefs.com/blog/google-advanced-search-operators/#find-qa-threads)
     - [Bing](https://www.bing.com)
     - [DuckDuckGo](https://www.duckduckgo.com)
     - [Internet Archive](https://archive.org/)
@@ -55,8 +55,9 @@
     - [exiftool](https://exiftool.org/): image metadata extractor 
 - Maps / GPS / Location
     - [Google Maps](https://maps.google.com/)
+    - [Bing Maps](https://maps.bing.com) - useful for when Google Maps censors an area
     - [Map Customizer](https://www.mapcustomizer.com/)
-    - [wigle.net](https://wigle.net): catalog of wireless networks
+    - [wigle.net](https://wigle.net): catalog and map of wireless networks
 - Phone / Cellphone
     - [phoneinfoga](https://github.com/sundowndev/phoneinfoga): OSINT framework for phone numbers
 - Web
@@ -467,7 +468,7 @@ App Locker is an application allowlisting technology introduced with Windows 7
 
 #### Manual Enum
 1. General System Info / Environment
-    - `id`: print real and effect user and group IDs
+    - `id`: print real and effective user and group IDs
     - `hostname`: may reveal target system's role within the network
     - `uname -a`: additional system info such as hostname, kernel version, distribution
     - `/etc/issue`: contains OS info (can be easily changed though)
@@ -528,7 +529,7 @@ App Locker is an application allowlisting technology introduced with Windows 7
 1. [Write your own shell code](https://axcheron.github.io/linux-shellcode-101-from-hell-to-shell/)
 
 ### Docker / VMs
-- [deepce](https://github.com/stealthcopter/deepce)
+- [deepce](https://github.com/stealthcopter/deepce): tool for docker container enumeration, privesc, and container escapes
 
 ### Cloud 
 #### AWS
@@ -559,9 +560,19 @@ aws ec2 describe-instances --output text --region us-east-1 --profile PROFILENAM
     ```bash
     # crack hashes and show results
     john --format=<format> --show hashes.txt 
-
-    ssh2john
     ```
+    - John also has several conversion scripts for other formats e.g.
+        - [`ssh2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/ssh2john.c)
+        - [`keepass2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/keepass2john.c)
+        - [`keychain2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/keychain2john.c)
+        - [`zip2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/zip2john.c)
+        - [`pdf2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/pdf2john.c)
+        - [`racf2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/hccap2john.c)
+        - [`rar2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/rar2john.c)
+        - [`office2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/office2john.c)
+        - [`pwsafe2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/pwsafe2john.c)
+        - [`hccap2john`](https://github.com/piyushcse29/john-the-ripper/blob/master/src/hccap2john.c)
+
 - [secretsdump.py](https://medium.com/@benichmt1/secretsdump-demystified-bfd0f933dd9b)
 - [hashcat](https://hashcat.net/hashcat/): CPU and GPU enabled hashcracking tool
 - [crackstation.com](https://crackstation.net/): online hash identifier and hashcracking tool using popular rainbow tables
