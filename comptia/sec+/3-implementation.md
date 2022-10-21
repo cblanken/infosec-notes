@@ -1,0 +1,442 @@
+# 3.0 Implementation
+
+## 3.1 Implement secure protocols
+- Protocols
+    - [SRTP (Secure Real-time Transport Protocol)](https://en.wikipedia.org/wiki/Secure_Real-time_Transport_Protocol): secure multimedia/VOIP protocol based on [RTP](https://en.wikipedia.org/wiki/Real-time_Transport_Protocol) that uses AES encryption and HMAC-SHA1 for authentication
+    - [NTP (Network Time Protocol)](https://en.wikipedia.org/wiki/Network_Time_Protocol): protocol for clock synchronization between computer systems, but it has no security features
+        - [NTPSec](https://en.wikipedia.org/wiki/Network_Time_Protocol#NTPsec): Secure NTP, cleaned up codebase and removed some known vulnerabilities from NTP
+    - Email
+        - [S/MIME (Secure/Multipurpose Internet Mail Extensions)](https://en.wikipedia.org/wiki/S/MIME): email protocol that uses PKI for encryption and digital signing of [MIME](https://en.wikipedia.org/wiki/MIME) data
+        - [POP3](https://en.wikipedia.org/wiki/Post_Office_Protocol) with SSL / [IMAP](https://en.wikipedia.org/wiki/Internet_Message_Access_Protocol) with SSL
+        - SSL/TLS for web email
+    - [IPsec (Internet Protocol Security)](https://en.wikipedia.org/wiki/IPsec): Layer 3 authentication and encryption for every packet. [RFC 5406: IPSec v2 Guidelines](https://datatracker.ietf.org/doc/html/rfc5406)
+    - File transfer
+        - [FTPS](https://en.wikipedia.org/wiki/FTPS): FTP over SSL, NOTE this is not SFTP
+        - [SFTP](https://en.wikipedia.org/wiki/SSH_File_Transfer_Protocol): FTP over SSH, this protocol uses SSH as an underlying protcol for file transfer
+    - [LDAP (Lightweight Directory Access Protocol)](https://en.wikipedia.org/wiki/Lightweight_Directory_Access_Protocol): protocol for reading and writing directories over IP
+    - Domain Name Resolution
+        - DNS and [DNSSEC (DNS Security Extentions)](https://en.wikipedia.org/wiki/Domain_Name_System_Security_Extensions)
+
+## 3.2 Implement host or application security solutions
+- Endpoint protection
+    - Multi-stage protection: Defense in depth
+    - Anti-virus and anti-malware: primarily focus on signatures of files  (less useful), known to be inadequate for detecting malware for decades
+    - [EDR (Endpoint Detection and Response)](https://www.malwarebytes.com/what-is-edr): detects threats based on behavioral analysis, ML, and process monitoring, useful for creating a 'root cause analysis', can respond by quarantining the threat by isolating the system on the network and/or rolling back to a previous configuration
+    - [DLP (Data Loss Prevention)](https://www.fortinet.com/resources/cyberglossary/dlp): DLP solutions might be based on endpoints, at the firewall or even in the cloud, these systems can block data from leaving your network  if any sensitive info it detected
+    - [NGFW (Next-Generation FireWall)](https://www.cloudflare.com/learning/security/what-is-next-generation-firewall-ngfw/): identify and block applications (regardless of IP address or port number), can be used to allow or disallow application features, identify malware/attacks, examine encrypted data and prevent access to URLs or URL categories
+    - Host-based firewall: a software based firewall that runs on an individual endpoint. It can allow or disallow incoming/outgoing application traffic by application
+    - [HIDS (Host-based Intrusion __Detection__ System)](https://en.wikipedia.org/wiki/Host-based_intrusion_detection_system)
+    - [HIPS (Host-based Intrusion __Prevention__ System)](https://en.wikipedia.org/wiki/Intrusion_detection_system#Host-based)
+- Boot integrity
+    - Boot security / [UEFI (Unified Extensible Firmware Interface)](https://en.wikipedia.org/wiki/Unified_Extensible_Firmware_Interface) secure boot
+        - UEFI protections include: Public key from manufacturer to check digital signature during a BIOS update and prevent unauthorized writes to the flash
+        - Secure boot verifies the bootloader ensuring no modifications have been made to the bootloader with the digital signature and the bootloader must be signed with a trusted certificate
+    - Trusted boot: the bootloader verifies the digital signature of the OS kernel and the kernel verifies other startup components (boot drivers, startup files etc.). Just before loading drivers ELAM (Early Launch Anti-Malware) starts and checks all drivers are trusted
+    - Measured boot: hashes of the firmware, boot drivers, and anything loaded during secure boot are loaded into the TPM
+        - Remote attestation: a device produces a report digitally signed by the TPM, and sends the report  to a verification server, after the report is received the attestation serever, any changes are identified and managed by the system administrators
+- [TPM (Trusted Platform Module)](https://support.microsoft.com/en-us/topic/what-is-tpm-705f241d-025d-4470-80c5-4feeb24fa1ee): 
+- Database security
+    - Intellectual property, Compliance issues (PCI DSS, HIPAA, GDPR, etc.)
+    - Tokenization: tokenize sensitive info like credit card numbers, social security numbers, and PII
+    - Hash and salt passwords, don't encrypt
+- Application security: it's a balance between time and quality
+    - input validation: length, valid characters, etc.
+    - attackers will use fuzzing to test input validation of an application
+    - Secure cookies
+    - HTTP Secure Headers: enforce HTTPS communication
+    - Code signing
+    - Allow / deny lists
+    - Static code analyzers
+- Application hardening: trying to minimize the attack surface and reduce potential for vulnerabilities
+    - open ports and services: close everything except those required via firewall or NGFW (Next-Generation FireWall)
+    - Windows registry: it's useful to know what an application changes in the registry, there are tools to get a diff of the registry
+- Disk encryption
+    - [FDE (Full Disk Encryption)](https://en.wikipedia.org/wiki/Disk_encryption#Full_disk_encryption)
+    - [SED (Self-Encrypting Drive)](https://en.wikipedia.org/wiki/Hardware-based_full_disk_encryption): anything written to the drive is automatically encrypted, these drives use the [Opal storage specification](https://en.wikipedia.org/wiki/Opal_Storage_Specification)
+    - Sandboxing: developing and testing applications on separate resources from production
+- OS hardening: vary based on OS (Windows, Linux, Android etc.)
+    - Updates: OS updates, service packs, security patches
+    - User accounts: 
+        - minimum password lengths and complexity
+        - limited access/permissions and other account limitations
+- Network access and security: limit network access
+- Monitor and secure endpoints with anti-malware and anti-virus software
+- Patch management
+- Hardware root of trust
+- Sandboxing
+
+## 3.3 Implement secure network designs
+- [Load balancing](https://en.wikipedia.org/wiki/Load_balancing_(computing)): distributing the load to a service to multiple servers
+    - Fault tolerance is an important features since local server outages will have little to no effect to users
+    - E.g. TCP offloading (protocol overhead), SSL offloading (encryption/decryption), caching for faster response, prioritization for QoS
+    - Scheduling
+        - Round-robin
+        - Weighted round-robin: basically prioritizing one or more servers in round-robin when distributing load
+        - Dynamic round-robin: monitors load among all the services and sends the 'next' request to the server with the least load
+        - Active/active load balancing: when many available services are active at once and able to take up the load if one server fails
+        - Active/passive: the load balancer distributes load across servers marked as _active_
+    - Affinity: a user communicating to a service will always be routed to the same server, usually tracked by IP or session id
+    - Active/passive load balancing: when some servers are on standby and only become active if an active server fails
+- Network segmentation
+    - Physical, logical, or virtual segmentation (devices, VLANs, virtual networks/systems)
+    - Used for performance with high-bandwidth applications
+    - Security: users shouldn't talk directly to database servers, only the applications which need to
+    - Compliance: mandated segmentation (PCI compliance)
+    - [VLANs](https://www.lifewire.com/virtual-local-area-network-817357): using the same hardware physically but separating the communication between the VLANs logically
+    - Extranet: a private network for partners, vendors, suppliers etc. that is isolated from the internal organization network
+        - extranets usually requries additional authentication 
+    - Intranet: a private network only accessible internally or via VPN
+    - [Data center network traffic](https://socradar.io/east-west-and-north-south-traffic-why-is-it-security-important/)
+        - East-west traffic: traffic between devices in the same data center
+        - North-south traffic: traffic to an outside device (ingress or egress)
+        - east-west and north-south traffic need to be handled differently since east-west is all internal and north-south has to deal with untrusted devices
+    - Zero trust: many networks are relatively open on the inside, a zero-trust model does not trust any device on the internal network and requires additional authentication and methods to secure the network
+        - everything must be verified e.g. MFA, additional firewall, monitoring/analytics etc.
+    - [VIP/VIPA (Virtual IP)](https://en.wikipedia.org/wiki/Virtual_IP_address): an IP address that doesn't correspond to a physical network interface, commanly used for one-to-many NAT (Network Address Translation)
+- VPN (Virtual Private Network)
+    - [Concentrator](https://www.privacyaffairs.com/vpn-concentrator/): encryption/decryption access device
+    - Deployment options include specialized cryptographic hardware and software-based
+    - Remote access VPN: on-demand access from a remote device
+    - SSL VPN (Secure Sockets Layer VPN)
+        - uses SSL/TLS over tcp/443 so usually no firewall issues
+        - doesn't require shared passwords like IPSec or digital certificates
+        - can usually be run from a browser or 'light' VPN client
+    - HTML5 VPNs
+        - HTML5 inclues a web cryptography API allowing you to create a VPN tunnel without a separate VPN application, you just need an HTML5 compliant browser
+    - Full tunnel: all data passes through the VPN concentrator and the remote user can't access network resources directly
+    - Split tunnel: the VPN is configured to send data destined for the corporate network over VPN, but other Internet resources can be accessed directly and don't pass through the VPN
+    - Site-to-site VPN: a VPN tunnel from corporate network to remote site, where both sides of the VPN maintain a concentrator and the two concentrators talk back and forth for all communications between the corporate network and the remote site, the concentrators are usually implemented on firewalls which are already in place
+    - [L2TP (Layer 2 Tunneling Protocol)](https://en.wikipedia.org/wiki/Layer_2_Tunneling_Protocol): connecting sites over layer 3 as if they were connected at layer 2
+        - commonly used with IPSec ([L2TP/IPSec](https://en.wikipedia.org/wiki/Layer_2_Tunneling_Protocol#L2TP/IPsec))
+    - [IPSec (Internet Protocol Security)](https://en.wikipedia.org/wiki/IPsec) / [RFC 5406: IPSec v2 Guidlines](https://datatracker.ietf.org/doc/html/rfc5406)
+        - security over layer 3 (authentication and encryption for every packet)
+        - confidentiality and integrity/anti-replay (encryption and packet signing)
+    - [PPTP (Point-to-Point Tunneling Protocol)](https://en.wikipedia.org/wiki/Point-to-Point_Tunneling_Protocol): a deprecated method for implementing VPNs
+- DNS (Domain Name Resolution): DNS has no built-in security
+    - Use DNNSEC which validates DNS responses by confirming origin authentication and data integrity with public key cryptography
+    - Use a DNS sinkhole for any known malicious sites
+        - Content filtering: this sinkhole can prevent queries to unwanted or suspicious sites
+- [NAC (Network Access Control)](https://en.wikipedia.org/wiki/Network_Access_Control):
+    - Host health checks: the NAC system isolate computers that don't meet certain conditions such as firewall enabled, OS up to date, antivirus up to date, etc.
+    - Agent vs agentless NAC
+        - Agents on clients can be _permanent_ (persistent) or _dissolvable_.
+    - port-based network access control IEEE 802.1X
+- Out-of-band management
+    - Many devices have separate/physical (usually USB/serial) management interfaces in case they are inaccessible via the network a modem can be connected to allow you dial-in to manage a device directly or you might use a console router (comm server) to connect to multiple devices over their out of band management interfaces.
+- Port (physical) security
+    - Broadcasts: send information to everyone on the network
+        - broadcast are limited to one frame or packet and all the devices must be in the broadcast domain for example a VLAN
+        - ARP requests are a type of broadcast
+        - IPV6 does not use broadcast only multicast
+    - Broadcast storm control
+        - managed switches can control the number of broadcasts allowed per second or even multicast or unicast traffic
+    - Loop protection: connecting two switches to each other, they'll send traffic back and forth forever since there is no counting mechanism at the MAC layer
+        - IEEE 802.1D [STP (Spanning  Tree Protocol)](https://en.wikipedia.org/wiki/Spanning_Tree_Protocol) was developed to prevent network loops in bridged (switched) networks
+        - IEEE 802.1w [RSTP (Rapid STP)](https://en.wikipedia.org/wiki/Spanning_Tree_Protocol#Rapid_Spanning_Tree_Protocol): provides faster spanning tree convergence after a topology change than STP
+        - [BPDU (Bridge Protocol Data Unit) guard](https://www.geeksforgeeks.org/what-is-bpdu-guard-and-how-to-configure-bpdu-guard/): it takes time for STP to notice the topology has changed on a network (when adding a new device), instead you can bypass the listening and learning states, Cisco calls this [PortFast](https://www.cisco.com/c/en/us/td/docs/switches/lan/catalyst4000/8-2glx/configuration/guide/stp_enha.html#wp1046787)
+            - this can be an issue if another switch is connected to the first switch causing a loop, BPDU guard automatically disables PortFast if a BPDU frame is received indicating a switch is possibly connected and reverts to standard STP procedure
+    - [DHCP snooping](https://www.geeksforgeeks.org/dhcp-snooping/)
+        - A switch can designate ports as: Trusted or Untrusted and monitor the untrusted ports for any DHCP traffic and add a list of untrusted devices and filter out the invalid DHCP messages
+    - MAC (Media Access Control) filtering: limit the access through the MAC address
+        - this can be easily bypassed by sniffing and spoofing a valid MAC on the network
+- [UTM (Unified Threat Management)](https://en.wikipedia.org/wiki/Unified_threat_management) / Web security gateway: may include the following functionality (these aren't used as much today due to issues with vendors being able to supply all the mentioned functionality and are mostly replaced by NGFWs)
+    - URL filters / content inspection
+    - malware inspection
+    - spam filters
+    - firewall
+    - IDS/IPS
+    - router switch
+    - VPN endpoint
+- Network-based firewalls
+    - Filter traffic by port number or application
+    - Encrypt traffic (VPN between sites)
+    - Stateless firewall: doesn't track traffic flows and individually examines each packet
+        - very rare these due to lack of security
+    - Stateful firewall: remembers the 'state' of each session
+        - each session adds to the session table to allow traffic back through the firewall from the endpoint without explicitly adding it to the firewall rules
+    - NGFW (Next-Generation FireWall) / application layer gateway / stateful multilayer inspection / deep packet inspection
+        - analyzes and categorizes every packet to apply security rules to all traffic
+        - allows control of network traffic based on application (e.g. MSSQL Server, Twitter, Youtube, etc.)
+        - can also apply rules for content filtering like URL filters and website traffic by category
+- [WAF (Web Application Firewall)](https://www.cloudflare.com/learning/ddos/glossary/web-application-firewall-waf/): applies rules to HTTP/HTTPS only
+    - allow/deny traffic based on expected input from the application
+- Firewall rules / ACL (Access Control Lists): 
+    - allow or deny traffic based on tuples of parameters including:
+        - Source IP
+        - Destination IP
+        - Port number
+        - Time of day
+        - Application
+        - etc.
+    - Most firewall have a logical application of rules (from top-to-bottom), so more specific rules tend to be applies first (at the top)
+- Proxies: a devices sitting between users and an external network, the proxy forwards the requests it receives on behalf of the users
+    - proxies are useful for caching information, access control, URL filtering, content scanning, etc.
+    - Application proxy: used by particular applications not on the network level
+    - Forward proxy: an "internal proxy", a proxy used on an internal network between a private network and the Internet
+    - Transparent proxy: accepts and forwards requests without modifying or filtering them, _non-transparent_ proxies are often used for URL filtering
+    - Reverse proxy: the opposite of a forward proxy, inbound traffic from the Internet is send to proxy before being forwarded to devices on an internal network
+    - Open proxy: a third-party proxy, often used to circumvent existing security controls
+- NIDS (Network Intrusion Detection System) and NIPS (Network Intrusion Prevention System)
+    - passive monitoring via port mirrors (SPAN) or a network tap, since it isn't inline there is no way for it to block traffic thus it's operating as NIDS which is passive
+    - Out-of-band response: an IPS can send a TCP RST (reset) frame to devices it notices have sent malicious traffic to kill the TCP session
+    - Inline monitoring: having the IDS/IPS physically inline (In-band) traffic can be directly dropped once identified as malicious
+    - Identification technologies
+        - Signature-based: looks for perfect matches of data/hashes of know malicious artifacts
+        - Anomaly-based: detection based on an initial normal baseline
+        - Behavior-based: e.g. SQL injection
+        - Heuristics: AI/ML
+- [Jump server / jump box](https://en.wikipedia.org/wiki/Jump_server): a hardened server that provides secure access to a protected network from an external client
+    - a jump server is placed between different security zones and provides secure access between them, commonly used to provide secure access to devices in a screened subnet from an internal network
+- Route security
+- QoS (Quality Of Service)
+    - prioritize VOIP traffic over web-browsing
+    - prioritize based on maximum bandwidth used by an application, traffic rate, VLANs etc
+- Implications of [IPv6](https://en.wikipedia.org/wiki/IPv6)
+    - More IP address space (128-bit addresses)
+    - More difficult to port scan
+    - No need for NAT
+    - No ARP => no ARP spoofing
+    - IPv6 isn't necessarily more secure, there will just be different security vulnerabilities going forward
+- Taps / port mirroring
+    - Intercepting network traffic
+    - Physical taps: disconnecting the link and installing a tap in the middle, may be active or passive
+    - Port mirroring/port redirection/SPAN (Switched Port ANalyzer): a software-based tapping mechanism usually build into a switch
+- Monitoring services
+- FIM (File Integrity Monitoring): some files should never be changed and should be monitored
+    - Windows - SFC (System File Checker)
+    - Linux - Tripwire is a real-time file integrity monitoring application
+
+## 3.4 Install and configure wireless security settings
+- [WPA2](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Access#WPA2)
+    - WPA2 includes mandatory support for [CCMP (Counter Mode CBC-MAC Protocol)](https://en.wikipedia.org/wiki/CCMP_(cryptography)) 
+    - WPA3 includes mandatory support for [CCMP (Counter Mode CBC-MAC Protocol)](https://en.wikipedia.org/wiki/CCMP_(cryptography)) 
+        - WPA3 replaces PSK with [SAE (Simultaneous Authentication of Equals)](https://en.wikipedia.org/wiki/Simultaneous_Authentication_of_Equals). SAE is a password-based authentication and password-authenticated key agreement method
+- [WPA3](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Access#WPA3)
+- Authentication
+    - Credentials
+        - Shared password / PSK (Pre-Shared Key)
+        - [Centralized authentication (802.1X)](https://www.fortinet.com/resources/cyberglossary/802-1x-authentication)
+- Captive portal
+- [WPS (Wi-Fi Protected Setup)](https://en.wikipedia.org/wiki/Wi-Fi_Protected_Setup): 
+- Authentication protocols
+    - IEEE 802.1X: port-based NAC (Network Access Control)
+    - [EAP (Extensible Authentication Protocol)](https://en.wikipedia.org/wiki/Extensible_Authentication_Protocol): an authentication framework defined in [RFC 3748](https://datatracker.ietf.org/doc/html/rfc3748)
+    - [EAP-FAST (EAP Flexible Authentication via Secure Tunneling)](https://en.wikipedia.org/wiki/Extensible_Authentication_Protocol#EAP_Flexible_Authentication_via_Secure_Tunneling_(EAP-FAST)):
+    - [PEAP (Protected EAP)](https://en.wikipedia.org/wiki/Protected_Extensible_Authentication_Protocol):
+    - [EAP-TLS](https://en.wikipedia.org/wiki/Extensible_Authentication_Protocol#EAP_Transport_Layer_Security_(EAP-TLS))
+    - [EAP-TTLS](https://en.wikipedia.org/wiki/Extensible_Authentication_Protocol#EAP_Tunneled_Transport_Layer_Security_(EAP-TTLS))
+    - [RADIUS](https://docs.microsoft.com/en-us/windows/win32/nps/ias-radius-authentication-and-accounting): a networking protocol that provided centralized authentication
+- Installation considerations
+    -  Site surveys: document existing wireless landscape
+        - identify existing access points
+        - work frequencies already in use
+        - plan for ongoing site surveys as the wireless landscape changes
+        - Use wireless survey tools to generate heat maps based on wireless signal strengths
+    - Wireless packet analysis
+    - Channel selection and overlaps: avoid overlapping channels, [2.4GHz overlap chart](https://cdn1.expertreviews.co.uk/sites/expertreviews/files/2/74/wi-fi_channel_guide.png?itok=r-5t2Ia_)
+## 3.5 Implement secure mobile solutions
+- Connection methods and receivers
+    - Point-to-point: one-to-one connection
+    - Point-to-multipoint: 802.11 wireless
+    - Cellular networks
+    - RFID
+    - NFC
+    - USB
+    - GPS
+- [MDM (Mobile Device Management/Manager)](https://www.ibm.com/topics/mobile-device-management)
+    - Application management: allow list to avoid malicious applications
+    - [MCM (Mobile Content Management)](https://en.wikipedia.org/wiki/Mobile_content_management_system): CMS (Content Management Systems) for mobile devices
+    - Remote wipe: removing all data on a device remotely by the press of a button from the MDM
+        - Always have a backup of your data
+    - Geolocation / GPS / Triangulation: helpful for finding the device if lost, but it's also a privacy concern
+    - Geofencing: enabling/disabling features based on location, or as part of the authentication process for the device (only allowing logins from a particular area)
+    - Screen lock: passcode/PIN, lockout policy
+    - Push notifications
+    - Biometric factor
+    - Context-aware authentication
+    - Containerization: separate personal and business data on a device
+    - Full Device Encryption
+- Mobile device security:
+    - MicroSD hardware / HSM in microSD card form
+    - UEM (Unified Endpoint Management)
+    - [MAM (Mobile Application Management)](https://en.wikipedia.org/wiki/Mobile_application_management): the software and services responsible for provisioning and controlling access to mobile apps in enterprise settings
+    - [SEAndroid (Security Enhancements for Android)](https://source.android.com/security/selinux/): SELinux for Android OS
+- Mobile Device Enforcement and monitoring of:
+    - Third-party app stores
+    - Not all applications are secure including vulnerabilities and data leaks
+    - Rooting/jailbreaking
+    - Carrier unlocking
+    - Firmware [OTA (Over The Air)](https://en.wikipedia.org/wiki/Over-the-air_programming) updates
+    - Camera use
+    - SMS/MMS
+    - External media: e.g. SD cards, USB drives, etc.
+    - [USB OTG (On-The-Go)](https://en.wikipedia.org/wiki/USB_On-The-Go): introduced with USB 2.0
+    - Microphones
+    - Geotagging/GPS tagging: storing location metadata in photos, videos, etc.
+    - [WiFi Direct](https://en.wikipedia.org/wiki/Wi-Fi_Direct)
+    - [Wireless ad hoc network](https://en.wikipedia.org/wiki/Wireless_ad_hoc_network)
+    - Hotspot/tethering 
+    - Payment methods
+- Mobile Deployment models
+    - [BYOD (Bring Your Own Device)](https://en.wikipedia.org/wiki/Bring_your_own_device)
+    - [COPE (Corporate Owned, Personally Enabled)](https://nvlpubs.nist.gov/nistpubs/SpecialPublications/NIST.SP.1800-21.pdf): everything on the device is controlled by the company
+        - Corporate-owned: the company owns the phone and it can't be used for personal use, used when very specific security requirements are in place
+    - CYOD (Choose Your Own Device): you choose the device and company purchases it for you, otherwise like COPE
+    - VDI (Virtual Desktop Infrastructure) / VMI (Virtual Mobile Infrastructure): the apps and data are separated from the mobile device and stored somewhere else and the device is just used for remote access to the data and applications
+
+## 3.6 Apply cybersecurity solutions to the cloud
+- Cloud security controls
+    - High availability across zones, AZ (Availability Zones)
+        - isolated zones within a cloud region (based on geographic location)
+        - an AZ usually spans multpile regions and has independent power, HVAC, and networking
+        - Use load balancers to provide seamless HA
+        - Run applications as active/standby to switch in event of an outage in one zone
+    - Resource policies: IAM (Identity and Access Management)
+    - Secrets management: can become overwhelming, it's useful to have a centralized method for managing secrets (API keys, passwords, certificates etc.)
+        - it's fairly common to have a separate service to manage the secrets for everyone in the organization
+        - make sure to keep an audit trail to know who accessed what secrets and when
+    - Integration and auditing
+        - use a SIEM (Security Information and Event Management) to consolidate logs and reporting
+    - Cloud storage: make sure your storage is properly configured for secure handling including: permissions, encryption, replication, and high availability
+    - Cloud networks
+        - Virtual networks: virtual switches, virtual routers etc.
+        - Public and private subnets
+        - Segmentation
+        - API inspection and integration
+    - Cloud compute: EC2 (Amazon Elastic Compute Cloud), GCE (Google Compute Engine), MS Azure Virtual Machines
+        - Security groups are basically firewalls for compute instances
+        - Dynamic resource allocation / rapid elasticity allows compute to be scaled up and down automatically
+        - VPC endpoints
+            - VPC gateway endpoints: allow private cloud subnets to communicate to other cloud services
+            - this helps keep private resources private since they don't require Internet connectivity
+        - Container security: containers have ismilar security concerns as other applictation deployment methods
+            - best practice to use container-specific OS (minimalist OSes designed for containers)
+            - group container types on the same host
+- Solutions
+    - [CASB (Cloud Access Security Broker)](https://www.mcafee.com/enterprise/en-us/security-awareness/cloud/what-is-a-casb.html): manages and enforces security policies in the cloud usually implemented as client software or in the cloud itself.
+    - Application security: increased complexity when hosting applications in the cloud, in particular, misconfigurations for cloud storage. Be wary of attackers trying to exploit any public (or private) APIs 
+    - Next-Gen [SWG (Secure Web Gateway)](https://www.paloaltonetworks.com/cyberpedia/what-is-secure-web-gateway): protects devices and users by examining API requests to allow or disallow certain activity
+    - Firewalls in the cloud
+        - virtual firewall or host-based firewalls, usually less expensive than using a physical appliance
+        - allows granular deployment of firewalls for find-grained control of the network
+    - Native cloud security controls
+        - integrated and supported by the cloud provider
+- Cloud native controls vs. third-party solutions
+
+## 3.7 Implement identity and account management controls
+- Identity
+    - [IdP (Identity Provider)](https://www.cloudflare.com/learning/access-management/what-is-an-identity-provider/): authentication as a service
+        - IdP standards include: [SAML](https://en.wikipedia.org/wiki/Security_Assertion_Markup_Language), [OAuth](https://en.wikipedia.org/wiki/OAuth), [OpenID](https://en.wikipedia.org/wiki/OpenID)
+    - Attributes: e.g. name, email address, phone number, employee ID, job title, department name
+    - Certificates: using a public key cryptography certificate assigned to a person or device
+    - Tokens: e.g. USB token
+    - Smart cards
+    - SSH keys: critical for automation, ensure a centralized method for managing and audit key creation/use
+- Account types
+    - User accounts
+    - Shared and generic accounts
+    - Guest accounts
+    - Service accounts
+    - Privileged / administrator / root accounts
+- Account policies
+    - password policies, authentication factor policies etc.
+        - password complexity
+            - strong: resists brute-force attacks and has high entropy
+            - easy to remember
+            - pass _phrases_ are recommended
+    - Audits: perform routine/scheduled audits
+        - permission auditing: does everyong have the correct permissions
+        - scheduled recertification for users and admins
+        - user and application usage auditing / monitoring
+    - automatically analyse logs for security issues
+    - Account lockout policies
+        - too many incorrect password attempts
+        - disabling accounts may be important for saving encryption keys and other important information after an employee leave the company
+    - Location-based policies
+        - network location (based on IP)
+        - Geolocation / GPS
+        - Geofencing
+        - Geotagging: location metadata stored in documents, images, or other files
+
+## 3.8 Implement authentication and authorization solutions
+- Authentication management
+    - Password keys (e.g. YubiKey)
+    - Password manager/vault
+    - TPM (Trusted Platform Module)
+    - KBA (Knowledge-Based Authentication): use of personal knowledge as an authentication factor
+        - Static KBA: pre-configured with a shared secrets, often used for account recovery
+        - Dynamic KBA: questions are generated by an identity verification service
+    - HSM (Hardware Security Module): high-end cryptographic hardware, can be used centralized storage for all your encryption and decryption keys
+- Authentication / authorization
+    - [PAP (Password Authentication Protocol)](https://en.wikipedia.org/wiki/Password_Authentication_Protocol): a weak authentication scheme, used in legacy operating systems, everything is sent in the clear
+    - [CHAP (Challenge-Handshake Authentication Protocol](https://en.wikipedia.org/wiki/Password_Authentication_Protocol): uses an encrypted challenge over a 3-way handshake, the client responds with a password hash from the challenge and password
+    - [RADIUS (Remote Authentication Dial-In User Service)](https://en.wikipedia.org/wiki/RADIUS): services are available for almost any server operating system, and is very common in enterprise networks
+    - [TACACS (Terminal Access Controller Access-Control System)](https://en.wikipedia.org/wiki/TACACS): remote authentication protocol
+    - [XTACACS (Extended TACACS)](https://en.wikipedia.org/wiki/TACACS#XTACACS): a proprietary version of TACACS created by CISCO
+    - [TACACS+](https://en.wikipedia.org/wiki/TACACS#TACACS+): the latest version of TACACS
+    - [Kerberos](https://en.wikipedia.org/wiki/Kerberos_(protocol)): a network authentication protocol that uses SSO, so authentication is only required once after which the device is trusted by the system
+    - [IEEE 802.1X](https://en.wikipedia.org/wiki/IEEE_802.1X): a standard for port-based network access control (PNAC)
+        - commonly used with wirelless and wired connections and integrated with EAP
+    - Federation: providing network access to others (not just employees) e.g. login with Twitter, Google, Facebook etc.
+    - [SAML (Security Assertion Markup Language)](https://www.cloudflare.com/learning/access-management/what-is-saml/): an open standard for authentication and authorization to access third-party resources
+        - SAML was not designed for mobile apps
+    - [OAuth](https://en.wikipedia.org/wiki/OAuth): an open authorization framework
+        - OAuth is usually used with [OpenID](https://en.wikipedia.org/wiki/OpenID) Connect
+    - [OpenID Connect](https://openid.net/connect/): is an identity layer on top of the OAuth 2.0 protocol
+- Access control schemes
+    - [MAC (Mandatory Access Control)](https://en.wikipedia.org/wiki/Mandatory_access_control): access control where the OS or database constrains the ability of a _subject_ or _initiator_ (process or thread) to access an _object_ or _target_ (files, directories, ports, IO devices etc.)
+    - [DAC (Discretionary Access Control](https://en.wikipedia.org/wiki/Discretionary_access_control)
+    - [RBAC (Role-Based Access Control)](https://csrc.nist.gov/projects/role-based-access-control): permissions are provided to users by their given _roles_, each _role_ is given a set of permissions for resources and tasks
+    - [ABAC (Attribute-Based Access Control)](https://en.wikipedia.org/wiki/Attribute-based_access_control): access rights are granted to users through the use of policies which combine attributes together (e.g. ip address, time of day, desired action, relationship to data, type of resource, etc.)
+    - Rule-based access control: generic term for access control based on conditions/rules rather than who you are (e.g. access requires a Chrome browser, or access is only available between 9AM and 5PM)
+    - File system security / ACL / Group or user rights
+    - [PAM (Privileged Access Management)](https://www.fortinet.com/resources/cyberglossary/privileged-access-management): privileged accounts are stored in a digital vault and access is only granted by request and authentication, the privileges granted are temporary
+        - PAM allows for automation and extensive tracking and auditing of privileges
+## 3.9 Implement public key infrastructure
+- PKI (Public Key Infrastructure): managing digital certificates including: policies, procedures, hardware, software, people, and certificate creation, distribution, storage, revocation, and expiration.
+    - PKI takes __a lot__ of planning
+    - Key management lifecycle 
+    - [CA (Certificate Authority)](https://en.wikipedia.org/wiki/Certificate_authority): an entity that issues digital certificates
+        - [CSR (Certificate Signing Request)](https://csrc.nist.gov/glossary/term/Certificate_Signing_Request): a request sent from a certificate requester to a certificate authority to apply a digital identity
+        - Commercial CA: signatures provided by a 3rd party usually as a paid service
+        - Private CA: all in-house, useful when your devices don't need anything external over the Internet connecting to them, this is more convenient and less expensive and is essentially a requirment for any medium-to-large orginization
+    - PKI trust relationships
+        - Single CA: everyone receives their certificates from on authority
+        - Hierarchal: a _root_ CA issues certs to intermediate CAs
+            - this method distributes the certificate management load and allows for easier revocation of intermediate CAs
+        - Mesh: cross-certifying CAs, this method doesn't scale well though due to the increased complexity for each added CA
+        - Web-of-trust: an alternative to traditional PKI (e.g. PGP)
+        - Mutual authentication: the client athenticates to the server _and_ vice versa
+    - [RA (Registration Authority)](https://csrc.nist.gov/glossary/term/registration_authority)
+    - Certificate revocation: when a certificate is deemed invalid _before_ the end of its lifecycle
+        - [CRL (Certificate Revocation List)](https://csrc.nist.gov/glossary/term/certificate_revocation_list): contains many revocations in a file
+    - [OCSP (Online Certificate Status Protocol)](https://www.rfc-editor.org/info/rfc2560) 
+- Types of certificates
+    - Web server SSL certificates
+        - [DV (Domain Validation) certificate](https://en.wikipedia.org/wiki/Domain-validated_certificate)
+        - [EV (Extended Validation) certificate](https://en.wikipedia.org/wiki/Extended_Validation_Certificate): provides additional checks
+        - [SAN (Subject Alternative Name)](https://en.wikipedia.org/wiki/Subject_Alternative_Name)
+    - Code signing certificate: applications can be signed by a developer using a code signing certificate
+    - [Root certificate](https://en.wikipedia.org/wiki/Root_certificate): the public key cert that identifies the root CA, the root certificate issues other, intermediate certificates, thus the need for all security precautions since access the root cert allows for creation of any trusted certificates
+    - Self-signed certificates: these don't need to be signed but a public CA
+    - Machine and computer certificates: e.g. for VPN authorization
+    - Email certificates: used to send and receive encrypted emails
+    - User certificates: used as an additional authentication factor e.g. by associating a certificate with a user's ID card/smart card
+- Certificate formats
+    - [X.509 digital certificates](https://docs.microsoft.com/en-us/azure/iot-hub/tutorial-x509-certificates)
+    - [DER (Distinquished Encoding Rules)](https://en.wikipedia.org/wiki/X.690#DER_encoding): format designed to transfer syntax for data structures, DER is a binary format
+    - [PEM (Privacy-Enhanced mail)](https://en.wikipedia.org/wiki/X.690#DER_encoding): a base64 encoded DER
+    - PKCS (Public Key Cryptography Standards) #12: standard created by RSA container format (`.p12` or `.pfx`) to transfer multiple certificates in a single file
+        - often used to transfer a private and public key pair
+        - the container can be password protected
+    - CER (Certificate) format (`.cer`): primarily a Windows X.509 file extension
+        - can be encoded as a binary DER or ASCII PEM
+    - PKCS (Public Key Cryptography Standards) #7 format (`.p7b`): ASCII certificate format
+- Concepts
+    - Online vs. offline CA: by distributing the load into multiple intermediate CAs, you can take the root CA offline to better protect while the intermediate CAs stay online, if any single online CA is compromised, only the associated certificates need to be reissued
+    - [OCSP stapling](https://en.wikipedia.org/wiki/OCSP_stapling): a standard for checking the revocation status of X.509 certificates
+    - Pinning: embedding a certificate or public key into an application by adding it at compile time or on the first execution then checking the certificate matches what's available on a server
+    - Key escrow: your private keys are in the hands of a third party
+        - trust and clear process and procedures are vital since access of the keys is in control of the 3rd party
+    - Certificate chaining
+        - Chain of trust: list of all the certs between a server and the root CA
